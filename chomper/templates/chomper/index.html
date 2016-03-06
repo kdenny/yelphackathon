@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+
+<html>
+    {% include 'chomper/base.html' %}
+	<style>
+    	.container{
+      		background-color: #48B8D2;
+    	}
+		.row {
+    		color: #FFFFFF;
+			font-size: 22px;
+		}
+		body{
+      		background-color: #48B8D2;
+    	}
+  </style>
+    <body>
+    <div class="container">
+		<div class="col-sm-3 col-md-3">
+		</div>
+		<div class="col-sm-6 col-md-6 text-center">
+			{% if user.is_authenticated %}
+				<strong>{{ boldmessage }}</strong><br />
+			{% else %}
+				<h1> Please register/login! </h1>
+			{% endif %}
+
+			<div class="col-sm-6 col-md-6 text-center">
+				<row>I want to eat...</row>
+				<br>
+				<br>
+                <br>
+				<row>On...</row>
+				<br>
+				<br>
+				<br>
+				<row>With...</row>
+				<br>
+				<br>
+				<br>
+				<row>Between...</row>
+				<br>
+				<br>
+                <br>
+				<row>&...</row>
+			</div>
+
+			<div class="col-sm-6 col-md-6 text-center">
+                <form class="form-google" name="params" method="post" action="/chomper/googlemaps/">
+                    {% csrf_token %}
+          			{% load bootstrap %}
+                    <select name="cuisine">
+                        <option selected="selected" disabled>Select a cuisine</option>
+                        <option value="bbq">BBQ</option>
+                        <option value="italian">Italian / Pizza</option>
+                        <option value="american">American</option>
+                        <option value="southern">Southern</option>
+                        <option value="steakhouse">Steakhouse</option>
+                        <option value="fastfood">Fast Food</option>
+                        <option value="diner">Diner / Breakfast</option>
+                        <option value="casual">Casual</option>
+                        <option value="seafood">Seafood</option>
+                        <option value="vege">Vegetarian</option>
+                        <option value="caribbean">Caribbean</option>
+                        <option value="latin">Latin</option>
+                        <option value="mexican">Mexican</option>
+                        <option value="thai">Thai</option>
+                        <option value="chinese">Chinese</option>
+                        <option value="indian">Indian</option>
+                        <option value="vietnamese">Vietnamese</option>
+                        <option value="japanese">Japanese</option>
+                        <option value="african">African</option>
+                        <option value="spanish">Spanish / Tapas</option>
+                        <option value="mediterranean">Mediterranean</option>
+                        <option value="greek">Greek</option>
+                        <option value="french">French / Belgian</option>
+                        <option value="french">Pub</option>
+				    </select>
+                    <br>
+                    <br>
+                    <br>
+                    <select name="date">
+						<option selected="selected" disabled>Select a date / time</option>
+						<option value="today">3/5/2016, Evening</option>
+						<option value="tomorrow">3/6/2016, Afternoon</option>
+					  	<option value="monday">3/7/2016, Evening</option>
+                    </select>
+                    <br>
+                    <br>
+                    <br>
+                    <select name="users">
+						<option selected="selected" disabled>Select friend</option>
+						<option value="obama">Barry O.</option>
+						<option value="kdenny">Kevin D.</option>
+					  	<option value="ted">Ted C.</option>
+                    </select>
+                    <br>
+                    <br>
+                    <br>
+                    <select name="origin">
+						<option selected="curloc" >Current Location</option>
+						<option value="250 K St NE Washington, DC">250 K St NE Washington, DC</option>
+						<option value="obama">1600 Pennsylvania Ave NW</option>
+                    </select>
+                    <br>
+                    <br>
+                    <br>
+                    <select name="destination">
+						<option selected="selected" disabled>Select a location...</option>
+					  	<option value="1600 Pennsylvania Ave NW Washington, DC">1600 Pennsylvania Ave NW Washington, DC</option>
+						<option value="obama1">Barry O. - White House</option>
+						<option value="raew1">Rachel W. - Home</option>
+					  	<option value="ted">Ted C. - Capitol</option>
+                    </select>
+                    <br>
+                    <br>
+				    <button class="btn btn-lg btn-primary btn-block" type="submit">Search</button>
+                    <input type="hidden" name="submit" value="submit" />
+                </form>
+			</div>
+
+			</div>
+		</div>
+
+
+    </body>
+</html>
