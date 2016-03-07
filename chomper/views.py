@@ -50,8 +50,6 @@ def index(request):
 
     dest = request.POST.get('destination')
     org = request.POST.get('origin')
-    data['cuisine'] = cuisine
-    cuisines.append(cuisine)
     data['date'] = date
     data['friend'] = friend
 
