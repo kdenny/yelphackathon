@@ -191,6 +191,7 @@ def yelp(request):
 
 def googlemaps(request):
     restaurants = {}
+    datum = {}
     cuisinecodes = {'bbq':'bbq','italian':'pizza','american':'american'}
     if request.method == 'POST':
         org = request.POST.get('origin')
@@ -204,11 +205,18 @@ def googlemaps(request):
         routeresults = calcRoutePoints(org,dest,mode)
         points = routeresults['points']
         distance = routeresults['distance']
+        duration = routeresults['duration']
         addresses = createAddressList(org,dest,mode,distance,points)
         restaurants = calcRestaurantList(addresses,cuisine)
+        numrest = len(restaurants)
         makeRestaurantPoints(restaurants)
+        datum['numrest'] = numrest
+        datum['cuisine'] = cuisine
+        datum['origin'] = org
+        datum['destination'] = dest
+        datum['mode'] = mode
 
-    return render(request, 'chomper/googlemaps.html', { 'data': restaurants })
+    return render(request, 'chomper/googlemaps.html', { 'data': restaurants, 'datum': datum})
 
 
 

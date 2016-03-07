@@ -59,6 +59,8 @@ def calcRoutePoints(ori,desi,modal):
     disttext = distlist['text']
     distnum = disttext.replace(" mi","")
     # pprint(directions_result)
+    durlist = dirleg['duration']
+    durtext = durlist['text']
     lines = []
     for leg in directions_legs:
         steps = leg['steps']
@@ -82,6 +84,7 @@ def calcRoutePoints(ori,desi,modal):
 
     results['points'] = points
     results['distance'] = distnum
+    results['duration'] = durtext
 
     return results
 

@@ -64,7 +64,7 @@ def calcRestaurantList(addresses, cuisine):
             yelpresults = getResults(cuisine,point)['businesses']
             processedyelpresults = processResults(yelpresults)
             for result in processedyelpresults:
-                if result not in used:
+                if (result not in used) and ('coords' in result):
                     restlist.append(processedyelpresults[result])
                     used.append(result)
 

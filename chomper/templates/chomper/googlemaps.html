@@ -37,6 +37,19 @@
 
     <body>
 
+		<section class="row">
+			{% if datum %}
+				<div class="panel panel-default">
+					<div class="panel-body">
+					<div class="col-sm-3 col-md-3 text-center"></div>
+                    <div class="col-sm-9 col-md-9 text-center">
+						You are viewing {{ datum.numrest }} restaurants between {{ datum.origin }} and {{ datum.destination }} .
+					</div>
+					</div>
+				</div>
+			{% endif %}
+
+		</section>
 	  <section class="row">
 		  <div class="container">
 			  <form class="form-google" id="google_form" method="post" action="/chomper/googlemaps/">
