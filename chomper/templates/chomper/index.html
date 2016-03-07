@@ -8,7 +8,7 @@
     	}
 		.row {
     		color: #FFFFFF;
-			font-size: 22px;
+			font-size: 28px;
 		}
 		body{
       		background-color: #48B8D2;
@@ -19,37 +19,26 @@
 		<div class="col-sm-3 col-md-3">
 		</div>
 		<div class="col-sm-6 col-md-6 text-center">
+            <div class="col-xs-12 text-center">
+                <h3>Select a cuisine, date and dining buddy!</h3>
+                <br>
+            </div>
 			{% if user.is_authenticated %}
 				<strong>{{ boldmessage }}</strong><br />
 			{% else %}
 				<h1> Please register/login! </h1>
 			{% endif %}
 
-			<div class="col-sm-6 col-md-6 text-center">
-				<row>I want to eat...</row>
-				<br>
-				<br>
-                <br>
-				<row>On...</row>
-				<br>
-				<br>
-				<br>
-				<row>With...</row>
-				<br>
-				<br>
-				<br>
-				<row>Between...</row>
-				<br>
-				<br>
-                <br>
-				<row>&...</row>
-			</div>
-
-			<div class="col-sm-6 col-md-6 text-center">
-                <form class="form-google" name="params" method="post" action="/chomper/googlemaps/">
-                    {% csrf_token %}
-          			{% load bootstrap %}
-                    <select name="cuisine">
+            <form class="form-params" name="params" method="post" action="/">
+            {% csrf_token %}
+            {% load bootstrap %}
+            <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="col-sm-6 col-md-6 text-center">
+                    <row>I want to eat...</row>
+                </div>
+                <div class="col-sm-6 col-md-6 text-center">
+                    <select name="cuisine" style="width: 100%">
                         <option selected="selected" disabled>Select a cuisine</option>
                         <option value="bbq">BBQ</option>
                         <option value="italian">Italian / Pizza</option>
@@ -76,51 +65,110 @@
                         <option value="french">French / Belgian</option>
                         <option value="french">Pub</option>
 				    </select>
-                    <br>
-                    <br>
-                    <br>
-                    <select name="date">
+                </div>
+
+
+            </div>
+            </div>
+
+            <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="col-sm-6 col-md-6 text-center">
+                    <row>On...</row>
+                </div>
+                <div class="col-sm-6 col-md-6 text-center">
+                    <select name="date" style="width: 100%">
 						<option selected="selected" disabled>Select a date / time</option>
 						<option value="today">3/5/2016, Evening</option>
 						<option value="tomorrow">3/6/2016, Afternoon</option>
 					  	<option value="monday">3/7/2016, Evening</option>
                     </select>
-                    <br>
-                    <br>
-                    <br>
-                    <select name="users">
+                </div>
+
+
+            </div>
+            </div>
+
+            <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="col-sm-6 col-md-6 text-center">
+                    <row>With...</row>
+                </div>
+                <div class="col-sm-6 col-md-6 text-center">
+                    <select name="user" style="width: 100%">
 						<option selected="selected" disabled>Select friend</option>
 						<option value="obama">Barry O.</option>
 						<option value="kdenny">Kevin D.</option>
 					  	<option value="ted">Ted C.</option>
                     </select>
-                    <br>
-                    <br>
-                    <br>
-                    <select name="origin">
-						<option selected="curloc" >Current Location</option>
-						<option value="250 K St NE Washington, DC">250 K St NE Washington, DC</option>
-						<option value="obama">1600 Pennsylvania Ave NW</option>
-                    </select>
-                    <br>
-                    <br>
-                    <br>
-                    <select name="destination">
-						<option selected="selected" disabled>Select a location...</option>
-					  	<option value="1600 Pennsylvania Ave NW Washington, DC">1600 Pennsylvania Ave NW Washington, DC</option>
-						<option value="obama1">Barry O. - White House</option>
-						<option value="raew1">Rachel W. - Home</option>
-					  	<option value="ted">Ted C. - Capitol</option>
-                    </select>
-                    <br>
-                    <br>
-				    <button class="btn btn-lg btn-primary btn-block" type="submit">Search</button>
-                    <input type="hidden" name="submit" value="submit" />
-                </form>
-			</div>
+                </div>
+
+
+            </div>
+            </div>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Select Addresses</button>
+            <input type="hidden" name="submit" value="submit" />
+            </form>
+            <br>
+
+
+
 
 			</div>
 		</div>
+
+    <script>
+
+    $(document).ready(function() {
+        $("select").select2();
+    });
+
+    </script>
+
+    {% if data.friend %}
+        <form class="form-google" name="google" method="post" action="/chomper/googlemaps/">
+        {% csrf_token %}
+        {% load bootstrap %}
+        <div class="col-sm-3 col-md-3">
+		</div>
+        <div class="col-sm-6 col-md-6 text-center">
+            <div class="panel panel-default">
+                <div class="panel-heading text-center">Select your current address</div>
+                <div class="panel-body">
+                    <div class="col-sm-9 col-md-9 text-center">
+                        <select name="origin" style="width: 100%">
+                            <option selected="curloc" >Current Location</option>
+                            <option value="250 K St NE Washington, DC">250 K St NE Washington, DC</option>
+                            <option value="obama">1600 Pennsylvania Ave NW</option>
+                        </select>
+                    </div>
+
+
+                </div>
+                </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading text-center">Select address to use for {{ data.friend }}</div>
+                <div class="panel-body">
+                    <div class="col-sm-9 col-md-9 text-center">
+                        <select name="destination" style="width: 100%">
+                            <option selected="selected" disabled>Select a location...</option>
+                            <option value="1600 Pennsylvania Ave NW Washington, DC">1600 Pennsylvania Ave NW Washington, DC</option>
+                            <option value="obama1">Barry O. - White House</option>
+                            <option value="raew1">Rachel W. - Home</option>
+                            <option value="ted">Ted C. - Capitol</option>
+                        </select>
+                    </div>
+
+
+                </div>
+                </div>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Find Restaurants</button>
+                <input type="hidden" name="submit" value="submit" />
+                </form>
+
+        </div>
+    {% endif %}
 
 
     </body>

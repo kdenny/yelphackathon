@@ -114,6 +114,7 @@
 
 
 		{% leaflet_map "spots" callback="map_init" %}
+
 		<script type="text/javascript">
 		// IE9 fix
 		if(!window.console) {
@@ -146,6 +147,7 @@
 				$.getJSON(datapointsurl, function (data) {
 					// Add GeoJSON layer
 					L.geoJson(data, {onEachFeature: onEachFeature}).addTo(map);
+                    map.fitBounds(L.geoJson(data).getBounds());
 				});
 
 			}

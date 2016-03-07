@@ -1,11 +1,12 @@
 # Django
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response
 from django.contrib.auth import logout
 from django.template import RequestContext, loader
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse, HttpResponseRedirect
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
+
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
@@ -32,19 +33,27 @@ from chomper.models import *
 from chomper.serializers import SnippetSerializer
 from chomper.forms import UserForm
 
-
+cuisines = []
 profile_track = None
 getTwitter = TwitterOauthClient(settings.TWITTER_CONSUMER_KEY, settings.TWITTER_CONSUMER_SECRET, settings.TWITTER_ACCESS_TOKEN, settings.TWITTER_ACCESS_TOKEN_SECRET)
 getLinkedIn = LinkedinOauthClient(settings.LINKEDIN_CLIENT_ID, settings.LINKEDIN_CLIENT_SECRET)
 getFacebook = FacebookOauthClient(settings.FACEBOOK_APP_ID, settings.FACEBOOK_APP_SECRET)
 
+
+
 def index(request):
     print "index: " + str(request.user)
-    restaurants = {}
-    org = request.POST.get('origin')
-    dest = request.POST.get('destination')
-    mode = request.POST.get('mode')
+    data = {}
     cuisine = request.POST.get('cuisine')
+    date = request.POST.get('date')
+    friend = request.POST.get('user')
+
+    dest = request.POST.get('destination')
+    org = request.POST.get('origin')
+    data['cuisine'] = cuisine
+    cuisines.append(cuisine)
+    data['date'] = date
+    data['friend'] = friend
 
     if not request.user.is_active:
         if request.GET.items():
@@ -137,7 +146,8 @@ def index(request):
 
 
     context = {'hello': 'world'}
-    return render(request, 'chomper/index.html', context)
+    return render_to_response('chomper/index.html', {'data': data, }, context_instance=RequestContext(request))
+    # return render(request, 'chomper/index.html', context)
 
 
 ##################
@@ -183,8 +193,7 @@ def yelp(request):
 
 def googlemaps(request):
     restaurants = {}
-    cuisinecodes = {}
-    cuisinecodes['bbq'] = 'bbq'
+    cuisinecodes = {'bbq':'bbq','italian':'pizza','american':'american'}
     if request.method == 'POST':
         org = request.POST.get('origin')
         dest = request.POST.get('destination')
