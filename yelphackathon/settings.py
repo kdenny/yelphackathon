@@ -24,7 +24,7 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['kdenny37.pythonanywhere.com']
 
 
 # Application definition
@@ -64,6 +64,8 @@ WSGI_APPLICATION = 'yelphackathon.wsgi.application'
 
 LEAFLET_CONFIG = {
     'DEFAULT_CENTER': (38.9, -77.04),
+    'MIN_ZOOM': 7,
+    'MAX_ZOOM': 18,
     'DEFAULT_ZOOM': 13,
     'TILES': 'http://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.png',
 }
@@ -100,6 +102,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# STATIC_ROOT = "/home/kdenny37/yelphackathon/static"
 
 TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 
