@@ -64,7 +64,7 @@ def calcRestaurantList(addresses, cuisine):
             yelpresults = getResults(cuisine,point)['businesses']
             processedyelpresults = processResults(yelpresults)
             for result in processedyelpresults:
-                if (result not in used) and ('coords' in result):
+                if (result not in used):
                     restlist.append(processedyelpresults[result])
                     used.append(result)
 
@@ -81,7 +81,7 @@ def getResults(term, location):
         location (str): The location of the business to query.
     """
     response = search(term, location)
-    # pprint.pprint(response)
+    pprint.pprint(response)
     return response
 
 def search(term, location):
@@ -168,8 +168,8 @@ def processResults(results):
             rdict['phone'] = result['display_phone']
         rdict['city'] = str(location['city']) + ", " + str(location['state_code'])
         rdict['rating'] = str(result['rating'])
-        if 'coordinate' in result['location']:
-            rdict['coords'] = [result['location']['coordinate']['latitude'], result['location']['coordinate']['longitude']]
-            restaurantDict[name] = rdict
+
+        rdict['coords'] = [result['location']['coordinate']['latitude'], result['location']['coordinate']['longitude']]
+        restaurantDict[name] = rdict
 
     return restaurantDict

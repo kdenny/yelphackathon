@@ -207,6 +207,7 @@ def googlemaps(request):
         distance = routeresults['distance']
         duration = routeresults['duration']
         addresses = createAddressList(org,dest,mode,distance,points)
+        print(cuisine)
         restaurants = calcRestaurantList(addresses,cuisine)
         numrest = len(restaurants)
         makeRestaurantPoints(restaurants)
@@ -215,6 +216,7 @@ def googlemaps(request):
         datum['origin'] = org
         datum['destination'] = dest
         datum['mode'] = mode
+        print(datum)
 
     return render(request, 'chomper/googlemaps.html', { 'data': restaurants, 'datum': datum})
 
