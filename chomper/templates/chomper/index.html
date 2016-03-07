@@ -32,44 +32,7 @@
             <form class="form-params" name="params" method="post" action="/">
             {% csrf_token %}
             {% load bootstrap %}
-            <div class="panel panel-default">
-            <div class="panel-body">
-                <div class="col-sm-6 col-md-6 text-center">
-                    <row>I want to eat...</row>
-                </div>
-                <div class="col-sm-6 col-md-6 text-center">
-                    <select name="cuisine" style="width: 100%">
-                        <option selected="selected" disabled>Select a cuisine</option>
-                        <option value="bbq">BBQ</option>
-                        <option value="italian">Italian / Pizza</option>
-                        <option value="american">American</option>
-                        <option value="southern">Southern</option>
-                        <option value="steakhouse">Steakhouse</option>
-                        <option value="fastfood">Fast Food</option>
-                        <option value="diner">Diner / Breakfast</option>
-                        <option value="casual">Casual</option>
-                        <option value="seafood">Seafood</option>
-                        <option value="vege">Vegetarian</option>
-                        <option value="caribbean">Caribbean</option>
-                        <option value="latin">Latin</option>
-                        <option value="mexican">Mexican</option>
-                        <option value="thai">Thai</option>
-                        <option value="chinese">Chinese</option>
-                        <option value="indian">Indian</option>
-                        <option value="vietnamese">Vietnamese</option>
-                        <option value="japanese">Japanese</option>
-                        <option value="african">African</option>
-                        <option value="spanish">Spanish / Tapas</option>
-                        <option value="mediterranean">Mediterranean</option>
-                        <option value="greek">Greek</option>
-                        <option value="french">French / Belgian</option>
-                        <option value="french">Pub</option>
-				    </select>
-                </div>
 
-
-            </div>
-            </div>
 
             <div class="panel panel-default">
             <div class="panel-body">
@@ -132,6 +95,42 @@
         <div class="col-sm-3 col-md-3">
 		</div>
         <div class="col-sm-6 col-md-6 text-center">
+            <div class="panel panel-default">
+            <div class="panel-heading text-center">Select a cuisine</div>
+            <div class="panel-body">
+                <div class="col-sm-9 col-md-9 text-center">
+                    <select name="cuisine" style="width: 100%">
+                        <option selected="selected" disabled>Select a cuisine</option>
+                        <option value="bbq">BBQ</option>
+                        <option value="italian">Italian / Pizza</option>
+                        <option value="american">American</option>
+                        <option value="southern">Southern</option>
+                        <option value="steakhouse">Steakhouse</option>
+                        <option value="fastfood">Fast Food</option>
+                        <option value="diner">Diner / Breakfast</option>
+                        <option value="casual">Casual</option>
+                        <option value="seafood">Seafood</option>
+                        <option value="vege">Vegetarian</option>
+                        <option value="caribbean">Caribbean</option>
+                        <option value="latin">Latin</option>
+                        <option value="mexican">Mexican</option>
+                        <option value="thai">Thai</option>
+                        <option value="chinese">Chinese</option>
+                        <option value="indian">Indian</option>
+                        <option value="vietnamese">Vietnamese</option>
+                        <option value="japanese">Japanese</option>
+                        <option value="african">African</option>
+                        <option value="spanish">Spanish / Tapas</option>
+                        <option value="mediterranean">Mediterranean</option>
+                        <option value="greek">Greek</option>
+                        <option value="french">French / Belgian</option>
+                        <option value="french">Pub</option>
+				    </select>
+                </div>
+
+
+            </div>
+            </div>
             <div class="panel panel-default">
                 <div class="panel-heading text-center">Select your current address</div>
                 <div class="panel-body">
