@@ -19,7 +19,7 @@ from rest_framework import viewsets, mixins
 from scripts.twitter import TwitterOauthClient
 from scripts.nytimes import *
 from scripts.linkedin import LinkedinOauthClient
-from scripts.yelp import requestData, calcRestaurantList
+from scripts.yelp import requestData, calcRestaurantList, getRestaurantAddresses
 from scripts.facebook import *
 from scripts.gmaps import calcRoutePoints, createAddressList, makeRestaurantPoints
 
@@ -192,23 +192,21 @@ def yelp(request):
 def googlemaps(request):
     restaurants = {}
     datum = {}
-    cuisinecodes = {'bbq':'bbq','italian':'pizza','american':'american'}
+    cuisinecodes = {'bbq':'bbq','italian':'pizza','american':'newamerican','african':'ethiopian'}
     if request.method == 'POST':
         org = request.POST.get('origin')
         dest = request.POST.get('destination')
         mode = 'driving'
-        # mode = request.POST.get('mode')
+        mode = request.POST.get('mode')
         ogcuisine = str(request.POST.get('cuisine'))
         cuisine = cuisinecodes[ogcuisine]
-        print("Start calculating route points")
-        print("")
+
         routeresults = calcRoutePoints(org,dest,mode)
         points = routeresults['points']
         distance = routeresults['distance']
-        duration = routeresults['duration']
         addresses = createAddressList(org,dest,mode,distance,points)
-        print(cuisine)
         restaurants = calcRestaurantList(addresses,cuisine)
+        restaurantaddresses = getRestaurantAddresses(restaurants)
         numrest = len(restaurants)
         makeRestaurantPoints(restaurants)
         datum['numrest'] = numrest
@@ -216,6 +214,7 @@ def googlemaps(request):
         datum['origin'] = org
         datum['destination'] = dest
         datum['mode'] = mode
+        datum['duration'] = routeresults['duration']
         print(datum)
 
     return render(request, 'chomper/googlemaps.html', { 'data': restaurants, 'datum': datum})

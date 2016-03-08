@@ -56,6 +56,17 @@ def requestData(location):
     data.append(content)
     return data
 
+def getRestaurantAddresses(restaurants):
+    addresslist = []
+    for rest in restaurants:
+        print rest
+        if 'address' in rest:
+            addressstring = str(rest['address']) + ' ' + str(rest['city'])
+            addresslist.append(addressstring)
+
+    pprint.pprint(addresslist)
+    return addresslist
+
 def calcRestaurantList(addresses, cuisine):
     restlist = []
     used = []
@@ -81,7 +92,7 @@ def getResults(term, location):
         location (str): The location of the business to query.
     """
     response = search(term, location)
-    pprint.pprint(response)
+    # pprint.pprint(response)
     return response
 
 def search(term, location):
@@ -168,8 +179,9 @@ def processResults(results):
             rdict['phone'] = result['display_phone']
         rdict['city'] = str(location['city']) + ", " + str(location['state_code'])
         rdict['rating'] = str(result['rating'])
-
-        rdict['coords'] = [result['location']['coordinate']['latitude'], result['location']['coordinate']['longitude']]
-        restaurantDict[name] = rdict
+        if ('coordinate' in result['location']):
+            rdict['coords'] = [result['location']['coordinate']['latitude'], result['location']['coordinate']['longitude']]
+            if rdict['city'] != rdict['address']:
+                restaurantDict[name] = rdict
 
     return restaurantDict

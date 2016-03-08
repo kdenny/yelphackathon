@@ -21,14 +21,17 @@ import sys
 from chomper.models import *
 
 # Kevin's Key
-gmapper = googlemaps.Client(key='AIzaSyCUSkUaTU4DJhuheYoh3_x2y1BBD40N3yc')
-# gmapper = googlemaps.Client(key='AIzaSyCUyRHrPjwl5F-hMit0-1lyZTyf6rKDMb8')
+# gmapper = googlemaps.Client(key='AIzaSyCUSkUaTU4DJhuheYoh3_x2y1BBD40N3yc')
+gmapper = googlemaps.Client(key='AIzaSyCUyRHrPjwl5F-hMit0-1lyZTyf6rKDMb8')
 
 
 ## Calculate all of the points needed in the route
 def calcRoutePoints(ori,desi,modal):
     # # David's Key
     # gmapper = googlemaps.Client(key='AIzaSyBoORTHlDRQ2CRzQrssQfjT3r99xPJHjrE')
+
+    print("Start calculating route points")
+    print("")
 
     results = {}
     t = datetime.time(8, 30, 0)
