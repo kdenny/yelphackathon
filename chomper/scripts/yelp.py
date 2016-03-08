@@ -29,37 +29,10 @@ SEARCH_LIMIT = 3
 SEARCH_PATH = '/v2/search/'
 BUSINESS_PATH = '/v2/business/'
 
-def requestData(location):
-    '''
-    Authenticates a request and returns
-    data from Yelp API.
-    '''
-    data = []
-    url = 'http://api.yelp.com/v2/business/' + location + '?'
-
-    consumer = oauth2.Consumer(CONSUMER_KEY, CONSUMER_SECRET)
-    oauth_request = oauth2.Request(method="GET", url=url)
-
-    oauth_request.update(
-        {
-            'oauth_nonce': oauth2.generate_nonce(),
-            'oauth_timestamp': oauth2.generate_timestamp(),
-            'oauth_token': TOKEN,
-            'oauth_consumer_key': CONSUMER_KEY
-        }
-    )
-    token = oauth2.Token(TOKEN, TOKEN_SECRET)
-    oauth_request.sign_request(oauth2.SignatureMethod_HMAC_SHA1(), consumer, token)
-    signed_url = oauth_request.to_url()
-    req = requests.get(signed_url)
-    content = json.loads(req.content)
-    data.append(content)
-    return data
 
 def getRestaurantAddresses(restaurants):
     addresslist = []
     for rest in restaurants:
-        print rest
         if 'address' in rest:
             addressstring = str(rest['address']) + ' ' + str(rest['city'])
             addresslist.append(addressstring)
@@ -67,11 +40,53 @@ def getRestaurantAddresses(restaurants):
     pprint.pprint(addresslist)
     return addresslist
 
-def calcRestaurantList(addresses, cuisine):
+def getCuisines(ogcuisine):
+    cuisinecodes = {}
+    cuisinecodes['Fast Food'] = ['hotdogs', 'burgers', 'chickenshop']
+    cuisinecodes['Diner / Breakfast'] = ['breakfast_brunch', 'diners']
+    cuisinecodes['Casual'] = ['salad', 'sandwiches', 'soup']
+    cuisinecodes['Italian / Pizza'] = ['pizza', 'italian']
+    cuisinecodes['African'] = ['african', 'ethiopian']
+    cuisinecodes['American'] = ['newamerican', 'tradamerican', 'gastropubs', 'burgers', 'cheesesteaks']
+    cuisinecodes['BBQ'] = ['bbq']
+    cuisinecodes['French / Belgian'] = ['french', 'belgian']
+    cuisinecodes['Pub'] = ['british', 'irish']
+    cuisinecodes['Southern'] = ['cajun', 'soulfood', 'southern']
+    cuisinecodes['Caribbean'] = ['caribbean']
+    cuisinecodes['Chinese'] = ['chinese']
+    cuisinecodes['Latin American'] = ['cuban', 'latin', 'brazilian']
+    cuisinecodes['Mexican'] = ['mexican', 'tex-mex']
+    cuisinecodes['Greek'] = ['greek']
+    cuisinecodes['Indian'] = ['indpak']
+    cuisinecodes['Japanese / Sushi'] = ['japanese', 'sushi']
+    cuisinecodes['Mediterranean'] = ['mediterranean','mideastern','kosher']
+    cuisinecodes['Seafood'] = ['seafood']
+    cuisinecodes['Spanish / Tapas'] = ['tapasmallplates','spanish']
+    cuisinecodes['Steakhouse'] = ['steak']
+    cuisinecodes['Thai'] = ['thai']
+    cuisinecodes['Vegetarian'] = ['vegetarian']
+    cuisinecodes['Vietnamese'] = ['vietnamese']
+
+    return cuisinecodes[ogcuisine]
+
+
+def getRestaurantAddressDict(restaurants):
+    addressdict = {}
+    for rest in restaurants:
+        if 'address' in rest:
+            addressstring = str(rest['address']) + ' ' + str(rest['city'])
+            addressdict[addressstring] = rest['name']
+
+    pprint.pprint(addressdict)
+    return addressdict
+
+def calcRestaurantList(addresses, cuisines):
     restlist = []
     used = []
     print addresses
+
     for point in addresses:
+        for cuisine in cuisines:
             yelpresults = getResults(cuisine,point)['businesses']
             processedyelpresults = processResults(yelpresults)
             for result in processedyelpresults:

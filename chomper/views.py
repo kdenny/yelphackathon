@@ -19,9 +19,9 @@ from rest_framework import viewsets, mixins
 from scripts.twitter import TwitterOauthClient
 from scripts.nytimes import *
 from scripts.linkedin import LinkedinOauthClient
-from scripts.yelp import requestData, calcRestaurantList, getRestaurantAddresses
+from scripts.yelp import calcRestaurantList, getRestaurantAddresses, getRestaurantAddressDict, getCuisines
 from scripts.facebook import *
-from scripts.gmaps import calcRoutePoints, createAddressList, makeRestaurantPoints
+from scripts.gmaps import calcRoutePoints, createAddressList, makeRestaurantPoints, calcRestaurantDistanceMatrix
 
 # Python
 import oauth2 as oauth
@@ -172,19 +172,6 @@ def facebook(request):
 
 
 
-
-#################
-#    YELP API   #
-#################
-
-def yelp(request):
-    data = {}
-    if request.method == 'POST':
-        origin = request.POST.get('origin')
-        data = requestData(origin)
-    return render(request, 'chomper/yelp.html', { 'data': data })
-
-
 #################
 # Google Maps API #
 #################
@@ -192,25 +179,33 @@ def yelp(request):
 def googlemaps(request):
     restaurants = {}
     datum = {}
-    cuisinecodes = {'bbq':'bbq','italian':'pizza','american':'newamerican','african':'ethiopian'}
     if request.method == 'POST':
         org = request.POST.get('origin')
         dest = request.POST.get('destination')
         mode = 'driving'
         mode = request.POST.get('mode')
+        if mode == 'None':
+            mode = 'driving'
         ogcuisine = str(request.POST.get('cuisine'))
-        cuisine = cuisinecodes[ogcuisine]
+        # cuisine = getCuisines(ogcuisine)
+        cuisines = getCuisines(ogcuisine)
 
         routeresults = calcRoutePoints(org,dest,mode)
         points = routeresults['points']
         distance = routeresults['distance']
         addresses = createAddressList(org,dest,mode,distance,points)
-        restaurants = calcRestaurantList(addresses,cuisine)
+        restaurants = calcRestaurantList(addresses,cuisines)
         restaurantaddresses = getRestaurantAddresses(restaurants)
-        numrest = len(restaurants)
+        restaurantaddressdict = getRestaurantAddressDict(restaurants)
+
+        users = ['me','Barry O.']
+        restaurantdistancematrix = calcRestaurantDistanceMatrix(restaurantaddresses,org,dest,mode,users,restaurantaddressdict)
+        # restaurants = addDistanceToRestaurants(restaurants,restaurantdistancematrix)
+
         makeRestaurantPoints(restaurants)
-        datum['numrest'] = numrest
-        datum['cuisine'] = cuisine
+
+        datum['numrest'] = len(restaurants)
+        datum['cuisine'] = ogcuisine
         datum['origin'] = org
         datum['destination'] = dest
         datum['mode'] = mode
