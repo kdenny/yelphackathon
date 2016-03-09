@@ -82,6 +82,13 @@
 
     <script>
 
+    if (navigator.geolocation) { // device can return its location
+    navigator.geolocation.getCurrentPosition(function(position) {
+         console.log(position.coords.latitude);
+         console.log(position.coords.longitude);
+    })
+    }
+
     $(document).ready(function() {
         $("select").select2();
     });
@@ -103,6 +110,7 @@
                         <option selected="selected" disabled>Select a cuisine</option>
                         <option value="BBQ">BBQ</option>
                         <option value="Italian / Pizza">Italian / Pizza</option>
+                        <option data-divider="true"></option>
                         <option value="American">American</option>
                         <option value="Southern">Southern</option>
                         <option value="Steakhouse">Steakhouse</option>
@@ -111,14 +119,17 @@
                         <option value="Casual">Casual</option>
                         <option value="Seafood">Seafood</option>
                         <option value="Vegetarian">Vegetarian</option>
+                        <option data-divider="true"></option>
                         <option value="Caribbean">Caribbean</option>
                         <option value="Latin">Latin</option>
                         <option value="Mexican">Mexican</option>
+                        <option data-divider="true"></option>
                         <option value="Thai">Thai</option>
                         <option value="Chinese">Chinese</option>
                         <option value="Indian">Indian</option>
                         <option value="Vietnamese">Vietnamese</option>
                         <option value="Japanese">Japanese</option>
+                        <option data-divider="true"></option>
                         <option value="African">African</option>
                         <option value="Spanish / Tapas">Spanish / Tapas</option>
                         <option value="Mediterranean">Mediterranean</option>

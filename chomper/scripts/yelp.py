@@ -77,17 +77,16 @@ def getRestaurantAddressDict(restaurants):
             addressstring = str(rest['address']) + ' ' + str(rest['city'])
             addressdict[addressstring] = rest['name']
 
-    pprint.pprint(addressdict)
     return addressdict
 
-def calcRestaurantList(addresses, cuisines):
+def calcRestaurantList(addresses, cuisines, distance):
     restlist = []
     used = []
     print addresses
 
     for point in addresses:
         for cuisine in cuisines:
-            yelpresults = getResults(cuisine,point)['businesses']
+            yelpresults = search(cuisine,point,distance)['businesses']
             processedyelpresults = processResults(yelpresults)
             for result in processedyelpresults:
                 if (result not in used):
@@ -99,18 +98,8 @@ def calcRestaurantList(addresses, cuisines):
 
     return restlist
 
-def getResults(term, location):
-    """Queries the API by the input values from the user.
 
-    Args:
-        term (str): The search term to query.
-        location (str): The location of the business to query.
-    """
-    response = search(term, location)
-    # pprint.pprint(response)
-    return response
-
-def search(term, location):
+def search(term, location, distance):
     """Query the Search API by a search term and location.
 
     Args:
@@ -122,6 +111,10 @@ def search(term, location):
     """
 
     print location
+
+    scalar = 1
+    if distance > 5:
+        scalar = int(float(distance) / 5.0)
 
     url_params = {
         'category_filter': term.replace(' ', '+'),

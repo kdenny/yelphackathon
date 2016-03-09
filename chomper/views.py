@@ -21,7 +21,7 @@ from scripts.nytimes import *
 from scripts.linkedin import LinkedinOauthClient
 from scripts.yelp import calcRestaurantList, getRestaurantAddresses, getRestaurantAddressDict, getCuisines
 from scripts.facebook import *
-from scripts.gmaps import calcRoutePoints, createAddressList, makeRestaurantPoints, calcRestaurantDistanceMatrix
+from scripts.gmaps import calcRoutePoints, createAddressList, makeRestaurantPoints, calcRestaurantDistanceMatrix, addDistanceToRestaurants
 
 # Python
 import oauth2 as oauth
@@ -183,18 +183,17 @@ def googlemaps(request):
         org = request.POST.get('origin')
         dest = request.POST.get('destination')
         mode = 'driving'
-        mode = request.POST.get('mode')
-        if mode == 'None':
-            mode = 'driving'
+        # mode = request.POST.get('mode')
+        # if mode == '':
+        #     mode = 'driving'
         ogcuisine = str(request.POST.get('cuisine'))
-        # cuisine = getCuisines(ogcuisine)
         cuisines = getCuisines(ogcuisine)
 
         routeresults = calcRoutePoints(org,dest,mode)
         points = routeresults['points']
         distance = routeresults['distance']
         addresses = createAddressList(org,dest,mode,distance,points)
-        restaurants = calcRestaurantList(addresses,cuisines)
+        restaurants = calcRestaurantList(addresses,cuisines,distance)
         restaurantaddresses = getRestaurantAddresses(restaurants)
         restaurantaddressdict = getRestaurantAddressDict(restaurants)
 

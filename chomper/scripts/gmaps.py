@@ -110,7 +110,8 @@ def createAddressList(origin,destination,mode,distance,intermediatepoints):
         if count > discardpoints and count % scalar == 1 and count < (numpoints - discardpoints) and ((count > 1) and (intermediatepoints[count] != intermediatepoints[count-1])):
             pointaddress = gmapper.reverse_geocode((point[0], point[1]))[0]['formatted_address'].encode('ascii', 'ignore')
             # pointaddress = pointaddress.strip(codecs.BOM_UTF8), 'utf-8'
-            addresslist.append(pointaddress)
+            if pointaddress not in addresslist:
+                addresslist.append(pointaddress)
         count += 1
 
     return addresslist
@@ -168,7 +169,13 @@ def calcRestaurantDistanceMatrix(restaurants,origin,destination,modal,users,addr
 
     return allrestresults
 
+def addDistanceToRestaurants(restaurants, distancematrix):
+    newrests = []
+    for rest in restaurants:
+        rest['distances'] = distancematrix[rest['name']]
+        newrests.append(rest)
 
+    return newrests
 
 def makePoints(points):
     count = 1
