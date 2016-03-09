@@ -45,12 +45,10 @@ def index(request):
     print "index: " + str(request.user)
     data = {}
     cuisine = request.POST.get('cuisine')
-    date = request.POST.get('date')
     friend = request.POST.get('user')
 
     dest = request.POST.get('destination')
     org = request.POST.get('origin')
-    data['date'] = date
     data['friend'] = friend
 
     if not request.user.is_active:

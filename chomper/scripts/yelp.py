@@ -118,7 +118,7 @@ def search(term, location, distance):
 
     url_params = {
         'category_filter': term.replace(' ', '+'),
-        'radius_filter': 805,
+        'radius_filter': 1000,
         'location': location.replace(' ', '+'),
         'limit': SEARCH_LIMIT
     }

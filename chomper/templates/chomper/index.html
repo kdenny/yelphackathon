@@ -20,7 +20,7 @@
 		</div>
 		<div class="col-sm-6 col-md-6 text-center">
             <div class="col-xs-12 text-center">
-                <h3>Select a cuisine, date and dining buddy!</h3>
+                <h3>Select a friend to grab food with!</h3>
                 <br>
             </div>
 			{% if user.is_authenticated %}
@@ -147,8 +147,9 @@
                 <div class="panel-body">
                     <div class="col-sm-9 col-md-9 text-center">
                         <select name="origin" style="width: 100%">
-                            <option selected="curloc" >Current Location</option>
-                            <option value="250 K St NE Washington, DC">250 K St NE Washington, DC</option>
+{#                            <option selected="curloc" >Current Location</option>#}
+                            <option>Current Location</option>
+                            <option selected="selected" value="250 K St NE Washington, DC">250 K St NE Washington, DC</option>
                             <option value="obama">1600 Pennsylvania Ave NW</option>
                         </select>
                     </div>
@@ -162,8 +163,8 @@
                 <div class="panel-body">
                     <div class="col-sm-9 col-md-9 text-center">
                         <select name="destination" style="width: 100%">
-                            <option selected="selected" disabled>Select a location...</option>
-                            <option value="1600 Pennsylvania Ave NW Washington, DC">1600 Pennsylvania Ave NW Washington, DC</option>
+                            <option disabled>Select a location...</option>
+                            <option selected="selected" value="1600 Pennsylvania Ave NW Washington, DC">1600 Pennsylvania Ave NW Washington, DC</option>
                             <option value="obama1">Barry O. - White House</option>
                             <option value="raew1">Rachel W. - Home</option>
                             <option value="ted">Ted C. - Capitol</option>
