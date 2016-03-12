@@ -96,7 +96,7 @@ def createAddressList(origin,destination,mode,distance,intermediatepoints):
 
     if mode == 'transit':
         scalar = 1
-        discardpoints = 7
+        # discardpoints = 7
         if (numpoints - (discardpoints * 2)) > 15:
             scalar = 2
     if mode == 'driving':

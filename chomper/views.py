@@ -180,8 +180,7 @@ def googlemaps(request):
     if request.method == 'POST':
         org = request.POST.get('origin')
         dest = request.POST.get('destination')
-        mode = 'driving'
-        # mode = request.POST.get('mode')
+        mode = request.POST.get('mode')
         # if mode == '':
         #     mode = 'driving'
         ogcuisine = str(request.POST.get('cuisine'))
