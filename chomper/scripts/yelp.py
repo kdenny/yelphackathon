@@ -83,15 +83,16 @@ def calcRestaurantList(addresses, cuisines, distance):
     restlist = []
     used = []
     print addresses
-
+    cuisine = str(cuisines[0])
+    if len(cuisines) > 1:
+        cuisine = ",".join(cuisines)
     for point in addresses:
-        for cuisine in cuisines:
-            yelpresults = search(cuisine,point,distance)['businesses']
-            processedyelpresults = processResults(yelpresults)
-            for result in processedyelpresults:
-                if (result not in used):
-                    restlist.append(processedyelpresults[result])
-                    used.append(result)
+        yelpresults = search(cuisine,point,distance)['businesses']
+        processedyelpresults = processResults(yelpresults)
+        for result in processedyelpresults:
+            if (result not in used):
+                restlist.append(processedyelpresults[result])
+                used.append(result)
 
     pprint.pprint(restlist)
     print(used)

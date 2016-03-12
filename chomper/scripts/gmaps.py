@@ -169,11 +169,17 @@ def calcRestaurantDistanceMatrix(restaurants,origin,destination,modal,users,addr
 
     return allrestresults
 
-def addDistanceToRestaurants(restaurants, distancematrix):
+def addDistanceToRestaurants(restaurants, distancematrix, addressdict):
     newrests = []
     for rest in restaurants:
-        rest['distances'] = distancematrix[rest['name']]
-        newrests.append(rest)
+        if rest['name'] in distancematrix:
+            rest['distances'] = distancematrix[rest['name']]
+            newrests.append(rest)
+        else:
+            addressstring = str(rest['address']) + ' ' + str(rest['city'])
+            otherrest = addressdict[addressstring]
+            rest['distances'] = distancematrix[otherrest]
+            newrests.append(rest)
 
     return newrests
 

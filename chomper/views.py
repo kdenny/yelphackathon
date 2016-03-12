@@ -197,7 +197,7 @@ def googlemaps(request):
 
         users = ['me','Barry O.']
         restaurantdistancematrix = calcRestaurantDistanceMatrix(restaurantaddresses,org,dest,mode,users,restaurantaddressdict)
-        restaurants = addDistanceToRestaurants(restaurants,restaurantdistancematrix)
+        restaurants = addDistanceToRestaurants(restaurants,restaurantdistancematrix,restaurantaddressdict)
 
         makeRestaurantPoints(restaurants)
 

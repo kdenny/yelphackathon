@@ -22,6 +22,9 @@ class RestaurantPoint(models.Model):
 class IntermediatePoint(models.Model):
     geom = PointField()
 
+class UserPoint(models.Model):
+    geom = PointField()
+
 class RouteLine(models.Model):
     geom = LineStringField()
 
@@ -35,13 +38,23 @@ class UserProfile(models.Model):
     def __unicode__(self):
         return self.user.username
 
+class UserLocation(models.Model):
+    user = models.ForeignKey(User)
+    address = models.TextField(max_length=200, default="250 K Street NE")
+    city = models.TextField(max_length=200, default="Washington")
+    state = models.TextField(max_length=200, default="Washington")
+    latlng = models.OneToOneField(UserPoint)
+
+    def __unicode__(self):
+        return unicode(self.address)
+
 class Profile(models.Model):
     user = models.ForeignKey(User)
     oauth_token = models.CharField(max_length=200)
     oauth_secret = models.CharField(max_length=200)
     name = models.TextField(max_length=200)
     age = models.IntegerField()
-    address = models.TextField(max_length=200, default="250 K Street NE Washington, DC")
+    location = models.ManyToManyField(UserLocation)
     logindate = models.DateTimeField(default=datetime.datetime.now, blank=True)
 
     def __unicode__(self):
