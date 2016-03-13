@@ -31,6 +31,17 @@ BUSINESS_PATH = '/v2/business/'
 
 
 def getRestaurantAddresses(restaurants):
+    """Calculates the list of all restaurant addresses
+
+    Args:
+        restaurants (list of dicts)
+        cuisines (list): The list of all cuisines to search for.
+        distance (int): The distance to search around each intermediate point
+
+    Returns:
+        restlist (list of dicts): The list of all restaurant results, containing dictionaries with the processed yelp results
+
+    """
     addresslist = []
     for rest in restaurants:
         if 'address' in rest:
@@ -41,6 +52,15 @@ def getRestaurantAddresses(restaurants):
     return addresslist
 
 def getCuisines(ogcuisine):
+    """Processes the input cuisine alias selected by the user, and selects the list of cuisines to query the Yelp API.
+
+    Args:
+        ogcuisine (str): The cuisine alias selected by the user
+
+    Returns:
+        cuisinecodes (list): The list of cuisines to be queried for the API
+
+    """
     cuisinecodes = {}
     cuisinecodes['Fast Food'] = ['hotdogs', 'burgers', 'chickenshop']
     cuisinecodes['Diner / Breakfast'] = ['breakfast_brunch', 'diners']
@@ -71,6 +91,15 @@ def getCuisines(ogcuisine):
 
 
 def getRestaurantAddressDict(restaurants):
+    """Creates a dictionary for identifying restaurants based on their address, to be used in distance matrix calculations.
+
+    Args:
+        restaurants (list of dicts) : processed data about the Yelp API
+
+    Returns:
+        addressdict (dict): The dictionary for identifying the restaurant at each point
+
+    """
     addressdict = {}
     for rest in restaurants:
         if 'address' in rest:
@@ -80,6 +109,18 @@ def getRestaurantAddressDict(restaurants):
     return addressdict
 
 def calcRestaurantList(addresses, cuisines, distance):
+    """Calls the Yelp API to search around each intermediate route point the function to process the
+    yelp results, and adds all new restaurants to a list.
+
+    Args:
+        addresses (list): The list of the addresses of all intermediate route points.
+        cuisines (list): The list of all cuisines to search for.
+        distance (int): The distance to search around each intermediate point
+
+    Returns:
+        restlist (list of dicts): The list of all restaurant results, containing dictionaries with the processed yelp results
+
+    """
     restlist = []
     used = []
     print addresses
@@ -106,6 +147,7 @@ def search(term, location, distance):
     Args:
         term (str): The search term passed to the API.
         location (str): The search location passed to the API.
+        distance (int): The search distance to query from each route point.
 
     Returns:
         dict: The JSON response from the request.
@@ -170,6 +212,15 @@ def request(host, path, url_params=None):
     return response
 
 def processResults(results):
+    """Parses the results of the Yelp API query into a more logical and easy to use structure.
+
+    Args:
+        results (dict): The JSON response from the API.
+
+    Returns:
+        restaurantDict: The processed results into an easier to use format
+
+    """
     restaurantDict = {}
     for result in results:
         rdict = {}

@@ -25,8 +25,19 @@ gmapper = googlemaps.Client(key='AIzaSyCUyRHrPjwl5F-hMit0-1lyZTyf6rKDMb8')
 
 
 
-## Calculate all of the points needed in the route
+
 def calcRoutePoints(ori,desi,modal):
+    """Calculates the route between origin and destination using the Google Directions API, and outputs processed results
+
+    Args:
+        ori (str): The origin address
+        desi (str): The destination address
+        modal (str): The travel mode between the two points
+
+    Returns:
+        results (dict): The processed data outputted from the Google Directions API
+
+    """
     # # David's Key
     # gmapper = googlemaps.Client(key='AIzaSyBoORTHlDRQ2CRzQrssQfjT3r99xPJHjrE')
 
@@ -78,8 +89,6 @@ def calcRoutePoints(ori,desi,modal):
 
     makePoints(points)
     makeLines(points)
-    # polylineshp = 'C:/CommutrTest/Shapefiles/RoutePolylines2.shp'
-    # convert_to_shapefile(routepoints,polylineshp)
 
     results['points'] = points
     results['distance'] = distnum
@@ -88,6 +97,19 @@ def calcRoutePoints(ori,desi,modal):
     return results
 
 def createAddressList(origin,destination,mode,distance,intermediatepoints):
+    """Uses the Google Reverse Geocoding API to create a list of addresses of intermediate points to be used to query the Yelp API
+
+    Args:
+        origin (str): The origin address
+        desination (str): The destination address
+        mode (str): The travel mode between the two points
+        distance (str): The travel distance between the two points
+        intermediatepoints (list) : The lat / long coordinates of all intermediate points
+
+    Returns:
+        addresslist (dict): The list of addresses to be used in querying the Yelp API
+
+    """
     addresslist = [origin, destination]
     numpoints = len(intermediatepoints)
     scalar = 10
@@ -119,6 +141,20 @@ def createAddressList(origin,destination,mode,distance,intermediatepoints):
 
 
 def calcRestaurantDistanceMatrix(restaurants,origin,destination,modal,users,addressdict):
+    """Uses the Google Distance Matrix API to calculate the travel times from the origin and destination to each restaurant
+
+    Args:
+        restaurants (list): The list of restaurants
+        origin (str): The origin address
+        destination (str): The destination address
+        modal (str): The travel mode between the two points
+        users (str): The two people meeting (deprecated)
+        addressdict (list) : The dictionary to be used in matching distance matrix results to restaurant names
+
+    Returns:
+        allrestresults (dict): The distance matrix of all travel times between each restaurant and the origin / destination
+
+    """
     userpoints = [origin, destination]
 
     gmappr = googlemaps.Client(key='AIzaSyB17F8Q89ZuNlPN3fAXinQUDK83Bufmmto')
@@ -171,6 +207,17 @@ def calcRestaurantDistanceMatrix(restaurants,origin,destination,modal,users,addr
     return allrestresults
 
 def addDistanceToRestaurants(restaurants, distancematrix, addressdict):
+    """Adds the distance matrix results to each restaurant dict
+
+    Args:
+        restaurants (list): The list of all restaurants with dict's of data
+        distancematrix (dict): The distance matrix of all travel times between each restaurant and the origin / destination
+        addressdict (list) : The dictionary to be used in matching distance matrix results to restaurant names
+
+    Returns:
+        newrests (list): The list of all restaunts, with distance matrix included
+
+    """
     newrests = []
     for rest in restaurants:
         if rest['name'] in distancematrix:
