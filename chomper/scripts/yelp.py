@@ -58,7 +58,7 @@ def getCuisines(ogcuisine):
     cuisinecodes['Mexican'] = ['mexican', 'tex-mex']
     cuisinecodes['Greek'] = ['greek']
     cuisinecodes['Indian'] = ['indpak']
-    cuisinecodes['Japanese / Sushi'] = ['japanese', 'sushi']
+    cuisinecodes['Japanese'] = ['japanese', 'sushi']
     cuisinecodes['Mediterranean'] = ['mediterranean','mideastern','kosher']
     cuisinecodes['Seafood'] = ['seafood']
     cuisinecodes['Spanish / Tapas'] = ['tapasmallplates','spanish']

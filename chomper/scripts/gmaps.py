@@ -56,7 +56,7 @@ def calcRoutePoints(ori,desi,modal):
     distlist = dirleg['distance']
     disttext = distlist['text']
     distnum = disttext.replace(" mi","")
-    # pprint(directions_result)
+    pprint(directions_result)
     durlist = dirleg['duration']
     durtext = durlist['text']
     lines = []
@@ -64,6 +64,7 @@ def calcRoutePoints(ori,desi,modal):
         steps = leg['steps']
         for step in steps:
             pline = step['polyline']['points']
+            tmode = step['travel_mode']
             polyline.append(pline)
             pts = PolylineCodec().decode(pline)
             lines.append(pts)
@@ -96,8 +97,8 @@ def createAddressList(origin,destination,mode,distance,intermediatepoints):
 
     if mode == 'transit':
         scalar = 1
-        # discardpoints = 7
-        if (numpoints - (discardpoints * 2)) > 15:
+        discardpoints = 5
+        if (numpoints - (discardpoints * 2)) > 25:
             scalar = 2
     if mode == 'driving':
         segments = int(float(distance) / .5)
@@ -107,7 +108,7 @@ def createAddressList(origin,destination,mode,distance,intermediatepoints):
         scalar = int(float(numpoints) / float(segments))
 
     for point in intermediatepoints:
-        if count > discardpoints and count % scalar == 1 and count < (numpoints - discardpoints) and ((count > 1) and (intermediatepoints[count] != intermediatepoints[count-1])):
+        if count > discardpoints and (count % scalar == 1 or scalar == 1) and count < (numpoints - discardpoints) and ((count > 1) and (intermediatepoints[count] != intermediatepoints[count-1])):
             pointaddress = gmapper.reverse_geocode((point[0], point[1]))[0]['formatted_address'].encode('ascii', 'ignore')
             # pointaddress = pointaddress.strip(codecs.BOM_UTF8), 'utf-8'
             if pointaddress not in addresslist:
@@ -221,8 +222,8 @@ def makeRestaurantPoints(restaurants):
     for rest in restaurants:
         rp = RestaurantPoint()
         rp.geom = {'type': 'Point', 'coordinates': [rest['coords'][1], rest['coords'][0]]}
-        rp.name = rest['name']
-        rp.rating = rest['rating']
+        rp.name = rest['name'].encode('ascii', 'ignore')
+        rp.rating = rest['rating'].encode('ascii', 'ignore')
         rp.isclosed = rest['closed']
         rp.address = rest['address']
         rp.save()

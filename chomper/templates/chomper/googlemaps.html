@@ -62,8 +62,10 @@
 	  <section class="row">
 		  <div class="container">
 			  <form class="form-google" id="google_form" method="post" action="/chomper/googlemaps/">
+                  <div class="col-sm-12">
           			{% csrf_token %}
           			{% load bootstrap %}
+
 				  <div class="col-sm-6">
 
 					  <div class="col-xs-12 text-center">
@@ -106,8 +108,7 @@
                                 </div>
 						</div>
 
-                      <button class="btn btn-lg btn-primary btn-block" type="submit">Search</button>
-                      <input type="hidden" name="submit" value="submit" />
+
                     </div>
                     </div>
 
@@ -127,7 +128,7 @@
                                 <option selected="selected" disabled>Select a cuisine</option>
                                 <option value="BBQ">BBQ</option>
                                 <option value="Italian / Pizza">Italian / Pizza</option>
-                                <option data-divider="true"></option>
+                                <option data-divider="true">------</option>
                                 <option value="American">American</option>
                                 <option value="Southern">Southern</option>
                                 <option value="Steakhouse">Steakhouse</option>
@@ -188,9 +189,11 @@
 				  <input type="hidden" name="submit" value="submit" />
                 </div>
                 </div>
+              </div>
+              <button class="btn btn-lg btn-primary btn-block" type="submit">Search</button>
+              <input type="hidden" name="submit" value="submit" />
+              </div>
 			  </form>
-
-			  </div>
 		  </div>
 	  </section>
 
