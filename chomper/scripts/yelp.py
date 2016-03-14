@@ -48,7 +48,7 @@ def getRestaurantAddresses(restaurants):
             addressstring = str(rest['address']) + ' ' + str(rest['city'])
             addresslist.append(addressstring)
 
-    pprint.pprint(addresslist)
+    # pprint.pprint(addresslist)
     return addresslist
 
 def getCuisines(ogcuisine):
@@ -140,6 +140,36 @@ def calcRestaurantList(addresses, cuisines, distance):
 
     return restlist
 
+def calcRestaurantList2(latlngs, cuisines, distance):
+    """Calls the Yelp API to search around each intermediate route point the function to process the
+    yelp results, and adds all new restaurants to a list.
+
+    Args:
+        latlngs (list): The list of the lat / long pairs of all intermediate route points.
+        cuisines (list): The list of all cuisines to search for.
+        distance (int): The distance to search around each intermediate point
+
+    Returns:
+        restlist (list of dicts): The list of all restaurant results, containing dictionaries with the processed yelp results
+
+    """
+    restlist = []
+    used = []
+    cuisine = str(cuisines[0])
+    if len(cuisines) > 1:
+        cuisine = ",".join(cuisines)
+    for point in latlngs:
+        yelpresults = search2(cuisine,point,distance)['businesses']
+        processedyelpresults = processResults(yelpresults)
+        for result in processedyelpresults:
+            if (result not in used):
+                restlist.append(processedyelpresults[result])
+                used.append(result)
+
+    pprint.pprint(restlist)
+    print(used)
+
+    return restlist
 
 def search(term, location, distance):
     """Query the Search API by a search term and location.
@@ -163,6 +193,32 @@ def search(term, location, distance):
         'category_filter': term.replace(' ', '+'),
         'radius_filter': 1000,
         'location': location.replace(' ', '+'),
+        'limit': SEARCH_LIMIT
+    }
+    return request(API_HOST, SEARCH_PATH, url_params=url_params)
+
+def search2(term, location, distance):
+    """Query the Search API by a search term and location.
+
+    Args:
+        term (str): The search term passed to the API.
+        location (str): The search location passed to the API.
+        distance (int): The search distance to query from each route point.
+
+    Returns:
+        dict: The JSON response from the request.
+    """
+
+    print location
+
+    scalar = 1
+    if distance > 5:
+        scalar = int(float(distance) / 5.0)
+
+    url_params = {
+        'category_filter': term.replace(' ', '+'),
+        'radius_filter': 1000,
+        'll': location.replace(' ', '+'),
         'limit': SEARCH_LIMIT
     }
     return request(API_HOST, SEARCH_PATH, url_params=url_params)

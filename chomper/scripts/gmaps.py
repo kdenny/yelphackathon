@@ -67,7 +67,7 @@ def calcRoutePoints(ori,desi,modal):
     distlist = dirleg['distance']
     disttext = distlist['text']
     distnum = disttext.replace(" mi","")
-    pprint(directions_result)
+    # pprint(directions_result)
     durlist = dirleg['duration']
     durtext = durlist['text']
     lines = []
@@ -90,9 +90,34 @@ def calcRoutePoints(ori,desi,modal):
     makePoints(points)
     makeLines(points)
 
+    durtexta = durtext.replace(" mins","")
+    durtexta = durtexta.replace(" min","")
+    x = 'hours'
+    nduration = ''
+
+    if x in durtexta:
+        xind = durtexta.index(x)
+        hoursub = durtexta[:xind]
+        time = int(hoursub) * 60
+        minsub = durtexta[(xind + 6):]
+        nduration = int(time) + int(minsub)
+
+    y = 'hour'
+
+    if y in durtexta and x not in durtexta:
+        xind = durtexta.index(y)
+        hoursub = durtexta[:xind]
+        time = int(hoursub) * 60
+        minsub = durtexta[(xind + 5):]
+        nduration = int(time) + int(minsub)
+
+    if y not in durtexta and x not in durtexta:
+        nduration = int(durtexta)
+
     results['points'] = points
     results['distance'] = distnum
     results['duration'] = durtext
+    results['durnum'] = nduration
 
     return results
 
@@ -138,6 +163,58 @@ def createAddressList(origin,destination,mode,distance,intermediatepoints):
         count += 1
 
     return addresslist
+
+def createLatLngs(origin,destination,mode,distance,intermediatepoints):
+    """Processes Latitude and Longitude values into a readable format for the Yelp API
+
+    Args:
+        origin (str): The origin address
+        destination (str): The destination address
+        mode (str): The travel mode between the two points
+        distance (str): The travel distance between the two points
+        intermediatepoints (list) : The lat / long coordinates of all intermediate points
+
+    Returns:
+        latlngs (list): The list of addresses to be used in querying the Yelp API
+
+    """
+    orgdest = [origin,destination]
+    latlngs = []
+    for pt in orgdest:
+        geocoderesult = gmapper.geocode(pt)[0]['geometry']['location']
+        alatlng = "{0},{1}".format(geocoderesult['lat'],geocoderesult['lng'])
+        latlngs.append(alatlng)
+
+
+    numpoints = len(intermediatepoints)
+    scalar = 10
+    discardpoints = 3
+    segments = 10
+    count = 1
+
+    if mode == 'transit':
+        scalar = 1
+        discardpoints = 5
+        if (numpoints - (discardpoints * 2)) > 25:
+            scalar = 2
+    if mode == 'driving':
+        segments = int(float(distance) / .5)
+        scalar = int(float(numpoints) / float(segments))
+    if mode == 'walking':
+        segments = int(float(distance) / .25)
+        scalar = int(float(numpoints) / float(segments))
+
+    for point in intermediatepoints:
+        if count > discardpoints and (count % scalar == 1 or scalar == 1) and count < (numpoints - discardpoints) and ((count > 1) and (intermediatepoints[count] != intermediatepoints[count-1])):
+            pointlatlng = "{0},{1}".format(point[0],point[1])
+            # pointaddress = pointaddress.strip(codecs.BOM_UTF8), 'utf-8'
+            if pointlatlng not in latlngs:
+                latlngs.append(pointlatlng)
+        count += 1
+
+    pprint(latlngs)
+
+    return latlngs
 
 
 def calcRestaurantDistanceMatrix(restaurants,origin,destination,modal,users,addressdict):
@@ -206,7 +283,7 @@ def calcRestaurantDistanceMatrix(restaurants,origin,destination,modal,users,addr
 
     return allrestresults
 
-def addDistanceToRestaurants(restaurants, distancematrix, addressdict):
+def addDistanceToRestaurants(restaurants, distancematrix, addressdict, initdistance):
     """Adds the distance matrix results to each restaurant dict
 
     Args:
@@ -221,12 +298,16 @@ def addDistanceToRestaurants(restaurants, distancematrix, addressdict):
     newrests = []
     for rest in restaurants:
         if rest['name'] in distancematrix:
-            rest['distances'] = distancematrix[rest['name']]
+            rest['origintime'] = distancematrix[rest['name']]['origin']
+            rest['destinationtime'] = distancematrix[rest['name']]['destination']
+            rest['outofthewaytime'] = int(rest['origintime']) + int(rest['destinationtime']) - initdistance
             newrests.append(rest)
         else:
             addressstring = str(rest['address']) + ' ' + str(rest['city'])
             otherrest = addressdict[addressstring]
-            rest['distances'] = distancematrix[otherrest]
+            rest['origintime'] = distancematrix[otherrest]['origin']
+            rest['destinationtime'] = distancematrix[otherrest]['destination']
+            rest['outofthewaytime'] = int(rest['origintime']) + int(rest['destinationtime']) - initdistance
             newrests.append(rest)
 
     return newrests
@@ -271,6 +352,10 @@ def makeRestaurantPoints(restaurants):
         rp.geom = {'type': 'Point', 'coordinates': [rest['coords'][1], rest['coords'][0]]}
         rp.name = rest['name'].encode('ascii', 'ignore')
         rp.rating = rest['rating'].encode('ascii', 'ignore')
+        if float(rest['rating']) >= 3.5:
+            rp.ratingqual = '#ff3300'
+        else:
+            rp.ratingqual = '#ff3300'
         rp.isclosed = rest['closed']
         rp.address = rest['address']
         rp.save()

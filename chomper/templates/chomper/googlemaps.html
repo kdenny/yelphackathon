@@ -131,18 +131,17 @@
                         </div>
 
 						<div class="col-xs-12 text-center">
+                            <br>
+                            <label>Search Radius</label>
 							<div class="btn-group" data-toggle="buttons">
 								<label class="btn btn-default">
-									<input type="radio" name="cost" value="1" checked="checked" /> $
+									<input type="radio" name="radius" value="1" checked="checked" /> 1 mi.
 								</label>
 								<label class="btn btn-default">
-									<input type="radio" name="cost" value="2" /> $$
+									<input type="radio" name="radius" value="2" /> 2 mi.
 								</label>
 								<label class="btn btn-default">
-									<input type="radio" name="cost" value="3" /> $$$
-								</label>
-								<label class="btn btn-default">
-									<input type="radio" name="cost" value="4" /> $$$$
+									<input type="radio" name="radius" value="5" /> 5 mi.
 								</label>
 							</div>
 						</div>
@@ -186,6 +185,14 @@
     				}
 			}
 
+            function styling(feature) {
+                return {'color': feature.properties.ratingqual};
+            }
+
+            function styla(feature) {
+                return {'color': feature.properties.ratingqual};
+            }
+
 			function map_init (map, options) {
 
 				var dataurl = '{% url "data" %}';
@@ -199,7 +206,18 @@
 				// Download GeoJSON via Ajax
 				$.getJSON(datapointsurl, function (data) {
 					// Add GeoJSON layer
-					L.geoJson(data, {onEachFeature: onEachFeature}).addTo(map);
+
+{#					L.geoJson(data, {onEachFeature: onEachFeature}).addTo(map);#}
+
+
+                    L.geoJson(data, {
+                        pointToLayer: function(feature, latlng) {
+                            return L.marker(latlng, {color: 'red'});
+                        },
+                        style: styling,
+                        onEachFeature: onEachFeature
+                    }).addTo(map);
+
                     map.fitBounds(L.geoJson(data).getBounds());
 				});
 
@@ -215,7 +233,10 @@
 					<th class="header"> Rating <i class="icon-sort"></i></th>
 	                <th class="header"> Address <i class="icon-sort"></i></th>
 	                <th class="header"> Cuisine <i class="icon-sort"></i></th>
-	                <th class="header"> Neighborhood <i class="icon-sort"></i></th>
+                    <th class="header"> Neighborhood <i class="icon-sort"></i></th>
+                    <th class="header"> Origin Time <i class="icon-sort"></i></th>
+                    <th class="header"> Destination Time <i class="icon-sort"></i></th>
+                    <th class="header"> Out of the Way Time <i class="icon-sort"></i></th>
 					<th class="header"> URL <i class="icon-sort"></i></th>
 	                </tr>
 	            </thead>
@@ -227,6 +248,9 @@
 	                    <td>{{ key.address }}</td>
 	                    <td>{{ key.cuisine }}</td>
 						<td>{{ key.neighborhood }}</td>
+                        <td>{{ key.origintime }}</td>
+                        <td>{{ key.destinationtime }}</td>
+                        <td>{{ key.outofthewaytime }}</td>
 	                    <td>{{ key.url |urlize }}</td>
 	    			</tr>
 	            	{% endfor %}

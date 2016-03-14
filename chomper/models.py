@@ -10,6 +10,7 @@ class RestaurantPoint(models.Model):
     geom = PointField()
     name = models.TextField(max_length=200)
     rating = models.FloatField(max_length=5)
+    ratingqual = models.TextField(max_length=200)
     isclosed = models.BooleanField(default=False)
     address = models.TextField(max_length=200)
 
@@ -17,7 +18,8 @@ class RestaurantPoint(models.Model):
     def popupContent(self):
         return '{0}<br>{1}'.format(
           self.name,
-          self.rating)
+          self.rating,
+          self.ratingqual)
 
 class IntermediatePoint(models.Model):
     geom = PointField()
@@ -61,31 +63,6 @@ class Profile(models.Model):
         return unicode(self.user)
 
 
-class InstagramProfile(models.Model):
-    user = models.ForeignKey(User)
-    instagram_user = models.CharField(max_length=200)
-    access_token = models.CharField(max_length=200)
-
-    def __unicode__(self):
-        return unicode(self.user)
-
-class TwitterProfile(models.Model):
-    user = models.ForeignKey(User)
-    twitter_user = models.CharField(max_length=200)
-    oauth_token = models.CharField(max_length=200)
-    oauth_token_secret = models.CharField(max_length=200)
-
-    def __unicode__(self):
-        return unicode(self.user)
-
-class LinkedinProfile(models.Model):
-    user = models.ForeignKey(User)
-    linkedin_user = models.CharField(max_length=200)
-    access_token = models.CharField(max_length=200)
-
-    def __unicode__(self):
-        return unicode(self.user)
-
 class Snippet(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=100, blank=True, default='')
@@ -94,20 +71,6 @@ class Snippet(models.Model):
 
     class Meta:
         ordering = ('created',)
-
-class FacebookProfile(models.Model):
-    user = models.ForeignKey(User)
-    fb_user_id = models.CharField(max_length=100)
-    time_created = models.DateTimeField(auto_now_add=True)
-    profile_url = models.CharField(max_length=50)
-    access_token = models.CharField(max_length=100)
-
-class GoogleProfile(models.Model):
-    user = models.ForeignKey(User)
-    google_user_id = models.CharField(max_length=100)
-    time_created = models.DateTimeField(auto_now_add=True)
-    access_token = models.CharField(max_length=100)
-    profile_url = models.CharField(max_length=100)
 
 
 
