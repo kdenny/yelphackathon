@@ -49,10 +49,11 @@
 			{% endif %}
 
 		</section>
+    {% if data %}
+    {% else %}
 	  <section class="row">
 		  <div class="container">
 			  <form class="form-google" id="google_form" method="post" action="/chomper/googlemaps/">
-                  <div class="col-sm-12">
           			{% csrf_token %}
           			{% load bootstrap %}
 
@@ -163,11 +164,62 @@
 			  </form>
 		  </div>
 	  </section>
+        {% endif %}
 
+        {% if data %}
+        <section>
+        <div class="col-xs-4">
+            <br>
+            <div class="table-responsive">
+	            <table data-toggle="table" class="table table-bordered table-hover table-striped tablesorter sortable">
+	                <thead>
+	                <tr>
+	                <th class="header"> Name <i class="icon-sort"></i></th>
+					<th class="header" data-sortable="true"> Rating <i class="icon-sort"></i></th>
+                    <th class="header"> Cuisine <i class="icon-sort"></i></th>
+                    <th class="header" data-sortable="true"> Extra Route Time <i class="icon-sort"></i></th>
+	                </tr>
+	            </thead>
+	            <tbody>
+					{% for key in data %}
+					<tr>
+	                    <td>
+                            <a target="_blank" href= {{ key.url }}>
+                            <div style="height:100%;width:100%">
+                                {{ key.name }}
+                            </div>
+                            </a>
+                        </td>
+	                    <td>{{ key.rating }}</td>
+                        <td>{{ key.cuisine.0.0 }}</td>
+                        <td>{{ key.outofthewaytime }}</td>
+	    			</tr>
+	            	{% endfor %}
+	            </tbody>
+	            </table>
+	        </div>
+        </div>
+        <div class="col-sm-8">
 
-		{% leaflet_map "spots" callback="map_init" %}
+        {% leaflet_map "spots" callback="map_init" %}
+        </div>
+        </section>
+
+        {% else %}
+        <section>
+        <div class="col-sm-12">
+        {% leaflet_map "spots" callback="map_init" %}
+        </div>
+        </section>
+        {% endif %}
 
 		<script type="text/javascript">
+        if (navigator.geolocation) { // device can return its location
+        navigator.geolocation.getCurrentPosition(function(position) {
+             console.log(position.coords.latitude);
+             console.log(position.coords.longitude);
+        })
+        }
 		// IE9 fix
 		if(!window.console) {
 			var console = {
@@ -178,6 +230,14 @@
 				timeEnd : function(){}
 			}
 			}
+
+            $(function(){
+              $('.js-popup-link').click(function(e){
+                e.preventDefault()
+                $('#popup').dialog({modal: true}).dialog('open').load(this.href)
+              })
+            })
+
 			function onEachFeature(feature, layer) {
     			if (feature.properties && feature.properties.popupContent) {
 					console.log(5 + 6);
@@ -185,13 +245,6 @@
     				}
 			}
 
-            function styling(feature) {
-                return {'color': feature.properties.ratingqual};
-            }
-
-            function styla(feature) {
-                return {'color': feature.properties.ratingqual};
-            }
 
 			function map_init (map, options) {
 
@@ -210,11 +263,26 @@
 {#					L.geoJson(data, {onEachFeature: onEachFeature}).addTo(map);#}
 
 
+{#                    L.geoJson(data, {#}
+{#                        pointToLayer: function(feature, latlng) {#}
+{#                            return L.marker(latlng, {icon: redIcon});#}
+{#                        },#}
+{#                        onEachFeature: onEachFeature#}
+{#                    }).addTo(map);#}
+
                     L.geoJson(data, {
                         pointToLayer: function(feature, latlng) {
-                            return L.marker(latlng, {color: 'red'});
+                            return L.marker(latlng, {
+                                icon: L.icon({
+                                    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-' + feature.properties.Color + '.png',
+                                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/images/marker-shadow.png',
+                                    iconSize: [25, 41],
+                                    iconAnchor: [12, 41],
+                                    popupAnchor: [1, -34],
+                                    shadowSize: [41, 41]
+                                })
+                            });
                         },
-                        style: styling,
                         onEachFeature: onEachFeature
                     }).addTo(map);
 
@@ -223,43 +291,43 @@
 
 			}
 		</script>
-      	{% if data %}
-	      <div class="col-lg-12">
-	        <div class="table-responsive">
-	            <table class="table table-bordered table-hover table-striped tablesorter">
-	                <thead>
-	                <tr>
-	                <th class="header"> Name <i class="icon-sort"></i></th>
-					<th class="header"> Rating <i class="icon-sort"></i></th>
-	                <th class="header"> Address <i class="icon-sort"></i></th>
-	                <th class="header"> Cuisine <i class="icon-sort"></i></th>
-                    <th class="header"> Neighborhood <i class="icon-sort"></i></th>
-                    <th class="header"> Origin Time <i class="icon-sort"></i></th>
-                    <th class="header"> Destination Time <i class="icon-sort"></i></th>
-                    <th class="header"> Out of the Way Time <i class="icon-sort"></i></th>
-					<th class="header"> URL <i class="icon-sort"></i></th>
-	                </tr>
-	            </thead>
-	            <tbody>
-					{% for key in data %}
-					<tr>
-	                    <td>{{ key.name }}</td>
-	                    <td>{{ key.rating }}</td>
-	                    <td>{{ key.address }}</td>
-	                    <td>{{ key.cuisine }}</td>
-						<td>{{ key.neighborhood }}</td>
-                        <td>{{ key.origintime }}</td>
-                        <td>{{ key.destinationtime }}</td>
-                        <td>{{ key.outofthewaytime }}</td>
-	                    <td>{{ key.url |urlize }}</td>
-	    			</tr>
-	            	{% endfor %}
-	            </tbody>
-	            </table>
-	        </div>
-	      </div>
-
-	    {% endif %}
+{#      	{% if data %}#}
+{#	      <div class="col-lg-12">#}
+{#	        <div class="table-responsive">#}
+{#	            <table class="table table-bordered table-hover table-striped tablesorter">#}
+{#	                <thead>#}
+{#	                <tr>#}
+{#	                <th class="header"> Name <i class="icon-sort"></i></th>#}
+{#					<th class="header"> Rating <i class="icon-sort"></i></th>#}
+{#	                <th class="header"> Address <i class="icon-sort"></i></th>#}
+{#	                <th class="header"> Cuisine <i class="icon-sort"></i></th>#}
+{#                    <th class="header"> Neighborhood <i class="icon-sort"></i></th>#}
+{#                    <th class="header"> Origin Time <i class="icon-sort"></i></th>#}
+{#                    <th class="header"> Destination Time <i class="icon-sort"></i></th>#}
+{#                    <th class="header"> Out of the Way Time <i class="icon-sort"></i></th>#}
+{#					<th class="header"> URL <i class="icon-sort"></i></th>#}
+{#	                </tr>#}
+{#	            </thead>#}
+{#	            <tbody>#}
+{#					{% for key in data %}#}
+{#					<tr>#}
+{#	                    <td>{{ key.name }}</td>#}
+{#	                    <td>{{ key.rating }}</td>#}
+{#	                    <td>{{ key.address }}</td>#}
+{#	                    <td>{{ key.cuisine.0.0 }}</td>#}
+{#						<td>{{ key.neighborhood }}</td>#}
+{#                        <td>{{ key.origintime }}</td>#}
+{#                        <td>{{ key.destinationtime }}</td>#}
+{#                        <td>{{ key.outofthewaytime }}</td>#}
+{#	                    <td>{{ key.url |urlize }}</td>#}
+{#	    			</tr>#}
+{#	            	{% endfor %}#}
+{#	            </tbody>#}
+{#	            </table>#}
+{#	        </div>#}
+{#	      </div>#}
+{##}
+{#	    {% endif %}#}
 
     </body>
 </html>

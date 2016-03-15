@@ -16,6 +16,7 @@ urlpatterns = patterns('',
     url(r'^logout/$', views.user_logout, name='logout'),
     url(r'^api/$', views.api_examples, name='api'),
     url(r'^data.geojson$', GeoJSONLayerView.as_view(model=RouteLine), name='data'),
-    url(r'^datapoints.geojson$', GeoJSONLayerView.as_view(model=RestaurantPoint, properties=('name','rating','ratingqual','popupContent')), name='datapoints'),
+    url(r'^datapoints.geojson$', GeoJSONLayerView.as_view(model=RestaurantPoint, properties=('name','rating','Color','popupContent')), name='datapoints'),
+    url(r'^popup/$', views.popup),
     url(r'^googlemaps/$', views.googlemaps, name='googlemaps'),
 )

@@ -170,6 +170,7 @@ def user_logout(request):
     return HttpResponseRedirect('/chomper/login/')
 
 
-
+def popup(request):
+    return render(request, 'popup.html')
 
 

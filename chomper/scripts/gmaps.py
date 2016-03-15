@@ -312,6 +312,20 @@ def addDistanceToRestaurants(restaurants, distancematrix, addressdict, initdista
 
     return newrests
 
+def getCurrentLocation():
+    """Uses the Google Distance Matrix API to calculate the travel times from the origin and destination to each restaurant
+
+    Args:
+
+    Returns:
+        currentlocation (dict): The user's current location
+
+    """
+
+    gmappr = googlemaps.Client(key='AIzaSyB17F8Q89ZuNlPN3fAXinQUDK83Bufmmto')
+    rmatrix = gmappr.distance_matrix(restaurants, userpoints, mode=modal)['rows']
+
+
 def makePoints(points):
     count = 1
     for point in points:
@@ -352,10 +366,12 @@ def makeRestaurantPoints(restaurants):
         rp.geom = {'type': 'Point', 'coordinates': [rest['coords'][1], rest['coords'][0]]}
         rp.name = rest['name'].encode('ascii', 'ignore')
         rp.rating = rest['rating'].encode('ascii', 'ignore')
-        if float(rest['rating']) >= 3.5:
-            rp.ratingqual = '#ff3300'
+        if float(rest['rating']) >= 4:
+            rp.Color = 'green'
+        elif float(rest['rating']) < 4 and float(rest['rating']) >= 3.0:
+            rp.Color = 'orange'
         else:
-            rp.ratingqual = '#ff3300'
+            rp.Color = 'red'
         rp.isclosed = rest['closed']
         rp.address = rest['address']
         rp.save()

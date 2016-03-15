@@ -10,7 +10,7 @@ class RestaurantPoint(models.Model):
     geom = PointField()
     name = models.TextField(max_length=200)
     rating = models.FloatField(max_length=5)
-    ratingqual = models.TextField(max_length=200)
+    Color = models.TextField(max_length=200)
     isclosed = models.BooleanField(default=False)
     address = models.TextField(max_length=200)
 
@@ -19,7 +19,7 @@ class RestaurantPoint(models.Model):
         return '{0}<br>{1}'.format(
           self.name,
           self.rating,
-          self.ratingqual)
+          self.Color)
 
 class IntermediatePoint(models.Model):
     geom = PointField()
