@@ -28,6 +28,15 @@
     }
   </style>
   <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#000000">
+    <meta name="description" content="">
+    <meta name="author" content="A map for finding travel time-optimized restaurants between two points">
+
     <title> Chomper </title>
     <script src="/static/bower_components/jquery/dist/jquery.js"></script>
     <script type="text/javascript" src="/static/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -48,12 +57,22 @@
     <link rel="stylesheet" href="https://rawgit.com/wenzhixin/bootstrap-table/master/src/bootstrap-table.css">
 
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css">
+    <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.css">
+    <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.Default.css">
+    <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.css">
+    <link rel="stylesheet" href="/static/leaflet-groupedlayercontrol/leaflet.groupedlayercontrol.css">
+{#    <link rel="stylesheet" href="/static/css/app.css">#}
+
+
 
   </head>
 
+
+
   <body>
     <nav class="navbar navbar-default" role="navigation" id="myNavbar">
-      <a href="/" class="pull-left"><img src="http://i.imgur.com/B1Da8c5.png" height="80" ></a>
+      <a href="/" class="pull-left"><img src="http://i.imgur.com/B1Da8c5.png" height="60" ></a>
       <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
@@ -65,21 +84,19 @@
           </button>
         </div>
 
+
+
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <br>
-        
-          <ul  class="nav navbar-nav navbar-right">
-            {% if user.is_authenticated %}
-              <li><a href="/chomper/googlemaps">Map</a></li>
-              <li><a>Hello {{user}}</a></li>
-              <li><a href="/chomper/logout/">Logout</a></li>
-            {% endif %}
-            {% if not user.is_authenticated %}
-              <li class="active"><a href="/chomper/register">Register <span class="sr-only">(current)</span></a></li>
 
-              <li><a href="/chomper/login">Login</a></li>
-            {% endif %}
+{#        <ul  class="nav navbar-nav navbar-left align-bottom">#}
+{#            <li class="hidden-xs"><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="sidebar-toggle-btn"><span class="glyphicon glyphicon-triangle-bottom"></span></a></li>#}
+{#        </ul>#}
+
+          <ul  class="nav navbar-nav navbar-right">
+              <li><a href="/chomper/googlemaps">Home</a></li>
+              <li><a href="/chomper/logout/">About</a></li>
+
           </ul>
           
           
@@ -88,5 +105,13 @@
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->
     </nav>
+  <script>
+      $("#sidebar-toggle-btn").click(function() {
+          $("#sidebar").toggle();
+{#          map.invalidateSize();#}
+          return false;
+      });
+
+  </script>
   </body>
 </html>

@@ -63,25 +63,52 @@ def getCuisines(ogcuisine):
     """
     cuisinecodes = {}
     cuisinecodes['Fast Food'] = ['hotdogs', 'burgers', 'chickenshop']
+    cuisinecodes['Burgers'] = ['burgers']
+    cuisinecodes['Chicken'] = ['chickenshop']
+    cuisinecodes['Fast Food'] = ['hotdogs']
+    cuisinecodes['Cheesesteaks'] = ['cheesesteaks']
+    cuisinecodes['Gastropubs'] = ['gastropubs']
     cuisinecodes['Diner / Breakfast'] = ['breakfast_brunch', 'diners']
+    cuisinecodes['Breakfast'] = ['breakfast_brunch']
+    cuisinecodes['Diner'] = ['diners']
     cuisinecodes['Casual'] = ['salad', 'sandwiches', 'soup']
+    cuisinecodes['Salad'] = ['salad']
+    cuisinecodes['Sandwiches'] = ['sandwiches']
+    cuisinecodes['Soup'] = ['soup']
     cuisinecodes['Italian / Pizza'] = ['pizza', 'italian']
+    cuisinecodes['Pizza'] = ['pizza']
+    cuisinecodes['Italian'] = ['italian']
     cuisinecodes['African'] = ['african', 'ethiopian']
-    cuisinecodes['American'] = ['newamerican', 'tradamerican', 'gastropubs', 'burgers', 'cheesesteaks']
+    cuisinecodes['American'] = ['newamerican', 'tradamerican']
     cuisinecodes['BBQ'] = ['bbq']
     cuisinecodes['French / Belgian'] = ['french', 'belgian']
+    cuisinecodes['French'] = ['french']
+    cuisinecodes['Belgian'] = ['belgian']
     cuisinecodes['Pub'] = ['british', 'irish']
+    cuisinecodes['British'] = ['british']
+    cuisinecodes['Irish'] = ['irish']
     cuisinecodes['Southern'] = ['cajun', 'soulfood', 'southern']
+    cuisinecodes['Cajun'] = ['cajun']
     cuisinecodes['Caribbean'] = ['caribbean']
     cuisinecodes['Chinese'] = ['chinese']
     cuisinecodes['Latin American'] = ['cuban', 'latin', 'brazilian']
-    cuisinecodes['Mexican'] = ['mexican', 'tex-mex']
+    cuisinecodes['Cuban'] = ['cuban']
+    cuisinecodes['Latin'] = ['latin']
+    cuisinecodes['Brazilian'] = ['brazilian']
+    cuisinecodes['Mexican'] = ['mexican']
+    cuisinecodes['Tex-Mex'] = ['tex-mex']
     cuisinecodes['Greek'] = ['greek']
     cuisinecodes['Indian'] = ['indpak']
     cuisinecodes['Japanese / Sushi'] = ['japanese', 'sushi']
+    cuisinecodes['Japanese'] = ['japanese']
+    cuisinecodes['Sushi'] = ['sushi']
     cuisinecodes['Mediterranean'] = ['mediterranean','mideastern','kosher']
+    cuisinecodes['Middle Eastern'] = ['mideastern']
+    cuisinecodes['Kosher'] = ['kosher']
     cuisinecodes['Seafood'] = ['seafood']
     cuisinecodes['Spanish / Tapas'] = ['tapasmallplates','spanish']
+    cuisinecodes['Tapas / Small Plates'] = ['tapasmallplates']
+    cuisinecodes['Spanish'] = ['spanish']
     cuisinecodes['Steakhouse'] = ['steak']
     cuisinecodes['Thai'] = ['thai']
     cuisinecodes['Vegetarian'] = ['vegetarian']
@@ -127,14 +154,40 @@ def calcRestaurantList(addresses, cuisines, distance):
     cuisine = str(cuisines[0])
     if len(cuisines) > 1:
         cuisine = ",".join(cuisines)
+    minrating = 5.0
+    worst = ''
+    ratings = []
     for point in addresses:
         yelpresults = search(cuisine,point,distance)['businesses']
         processedyelpresults = processResults(yelpresults)
         for result in processedyelpresults:
             if (result not in used):
-                restlist.append(processedyelpresults[result])
-                used.append(result)
+                if len(restlist) < 40:
+                    restlist.append(processedyelpresults[result])
+                    used.append(result)
+                    ratings.append(float(result['ratings']))
+                    if float(processedyelpresults[result]['rating']) < minrating:
+                        minrating = float(processedyelpresults[result]['rating'])
+                        worst = result
 
+                elif len(restlist) >= 40:
+                    ratings.sort()
+                    if float(processedyelpresults[result]['rating']) > minrating:
+                        if worst in restlist:
+                            restlist.remove(restlist.index(worst))
+                            if len(restlist) < 45:
+                                restlist.append(processedyelpresults[result])
+                        else:
+                            minrating = ratings[0]
+                            for r in restlist:
+                                if r['rating'] == minrating:
+                                    worst = r['name']
+                                    restlist.remove(r)
+                                    minrating = r['rating']
+                            if len(restlist) < 45:
+                                restlist.append(processedyelpresults[result])
+
+    print (len(restlist))
     pprint.pprint(restlist)
     print(used)
 
@@ -158,15 +211,42 @@ def calcRestaurantList2(latlngs, cuisines, distance):
     cuisine = str(cuisines[0])
     if len(cuisines) > 1:
         cuisine = ",".join(cuisines)
+    minrating = 5.0
+    worst = ''
+    ratings = []
     for point in latlngs:
         yelpresults = search2(cuisine,point,distance)['businesses']
         processedyelpresults = processResults(yelpresults)
         for result in processedyelpresults:
             if (result not in used):
-                restlist.append(processedyelpresults[result])
-                used.append(result)
+                if len(restlist) < 40:
+                    restlist.append(processedyelpresults[result])
+                    used.append(result)
+                    ratings.append(float(processedyelpresults[result]['rating']))
+                    if float(processedyelpresults[result]['rating']) < minrating:
+                        minrating = float(processedyelpresults[result]['rating'])
+                        worst = result
+                elif len(restlist) >= 40:
+                    ratings.sort()
+                    if float(processedyelpresults[result]['rating']) > ratings[0]:
+                        if worst in restlist:
+                            ratings.remove(minrating)
+                            restlist.remove(restlist.index(worst))
+                            if len(restlist) <= 45:
+                                restlist.append(processedyelpresults[result])
+                        else:
+                            print ("The worst rating is {0}".format(ratings[0]))
+                            minrating = ratings[0]
+                            for r in restlist:
+                                if r['rating'] == minrating:
+                                    restlist.remove(r)
+                                    ratings.remove(minrating)
+                            if len(restlist) <= 45:
+                                restlist.append(processedyelpresults[result])
+    print (ratings)
+    print (len(restlist))
 
-    pprint.pprint(restlist)
+    # pprint.pprint(restlist)
     print(used)
 
     return restlist

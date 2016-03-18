@@ -67,6 +67,7 @@ LEAFLET_CONFIG = {
     'MIN_ZOOM': 7,
     'MAX_ZOOM': 18,
     'DEFAULT_ZOOM': 13,
+    'RESET_VIEW': False,
     'TILES': 'http://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.png',
 }
 
