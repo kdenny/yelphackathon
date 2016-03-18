@@ -226,28 +226,32 @@ def calcRestaurantList2(latlngs, cuisines, distance):
                     if float(processedyelpresults[result]['rating']) < minrating:
                         minrating = float(processedyelpresults[result]['rating'])
                         worst = result
+                        # print ("The worst restaurant is {0}".format(worst))
                 elif len(restlist) >= 40:
                     ratings.sort()
                     if float(processedyelpresults[result]['rating']) > ratings[0]:
                         if worst in restlist:
                             ratings.remove(minrating)
                             restlist.remove(restlist.index(worst))
+                            # print ("Removed {0}, which had a rating of {1}".format(worst, minrating))
                             if len(restlist) <= 45:
                                 restlist.append(processedyelpresults[result])
+                                # print ("Added {0}, which had a rating of {1}".format(result, processedyelpresults[result]['rating']))
                         else:
-                            print ("The worst rating is {0}".format(ratings[0]))
                             minrating = ratings[0]
+                            # print ("The minimum rating for a restaurant is {0}".format(minrating))
                             for r in restlist:
+                                # print (r)
                                 if r['rating'] == minrating:
                                     restlist.remove(r)
                                     ratings.remove(minrating)
+                                    # print ("Removed {0}, which had a rating of {1}".format(r, minrating))
                             if len(restlist) <= 45:
                                 restlist.append(processedyelpresults[result])
-    print (ratings)
-    print (len(restlist))
+                                # print ("Added {0}, which had a rating of {1}".format(result, processedyelpresults[result]['rating']))
 
     # pprint.pprint(restlist)
-    print(used)
+    # print(used)
 
     return restlist
 

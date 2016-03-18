@@ -41,6 +41,14 @@
         opacity: 0.7;
         text-align:left;
     }
+    .tooltip{
+        position:absolute;
+        margin:5px;
+        width:200px;
+        height:50px;
+        border:1px solid black;
+        display:none;
+    }
     #sidebar {
       width: 270px;
       height: 400px;
@@ -89,7 +97,7 @@
         <div class="col-sm-12 col-md-12 text-center">
         <div class="panel panel-default">
                 <div class="panel-body">
-                    <div class="col-sm-3 col-md-3 text-left" style="font-size:11px">
+                    <div class="col-sm-3 col-md-3 text-left" style="font-size:12px">
                         <a href="/chomper/googlemaps/">
                           <button type="button" class="btn btn-xs btn-default" id="search-again-btn"><span class="glyphicon glyphicon-arrow-left"></span>Search Again</button>
                         </a>
@@ -180,7 +188,7 @@
     </div>
     {% else %}
 	  <section class="row">
-		  <div class="container">
+		  <div class="container" id="input-form">
 			  <form class="form-google" id="google_form" method="post" action="/chomper/googlemaps/">
           			{% csrf_token %}
           			{% load bootstrap %}
@@ -194,10 +202,16 @@
                       <div class="panel panel-default">
                         <div class="panel-body">
 
-                            <div class="col-xs-12 text-center">
-                                <input type="text" name="origin" class="form-control" placeholder="Enter an origin" value="" required autofocus>
+                            <div class="col-xs-11 text-center">
+                                <input type="text" name="origin" class="form-control" id="origin-loc" placeholder="Enter an origin" value="" required autofocus>
+                            </div>
+                            <div class="col-xs-1 text-center">
+                                 <button type="button" class="btn btn-xs btn-default pull-left" id="curloc-btn" data-toggle="tooltip" title="Use Current Location"><span class="glyphicon glyphicon-pushpin"></span></button>
+                            </div>
+                            <div class="col-xs-11 text-center">
                                 <input type="text" name="destination" class="form-control" placeholder="Enter a destination" value="" required autofocus>
-
+                            </div>
+                            <div class="col-xs-12 text-center">
                                 <div class="btn-group text-center" data-toggle="buttons">
                                     <label class="btn btn-default">
                                         <input type="radio" id="q156" name="mode" value="driving" /> Driving
@@ -291,21 +305,50 @@
                     </div>
                 </div>
               </div>
-              <button class="btn btn-lg btn-primary btn-block" type="submit">Search</button>
+              <button class="btn btn-lg btn-primary btn-block" type="submit" id="submit-btn">Search</button>
               <input type="hidden" name="submit" value="submit" />
 			  </form>
 		  </div>
 	  </section>
         {% endif %}
 
+        <div class="col-xs-12 text-center" id="progress" style="color:white;font-size:18px">Sit tight! We're crunching your results...</div>
+
+
+
 
 		<script type="text/javascript">
-        if (navigator.geolocation) { // device can return its location
-        navigator.geolocation.getCurrentPosition(function(position) {
-             console.log(position.coords.latitude);
-             console.log(position.coords.longitude);
-        })
-        }
+
+
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+
+        $("#curloc-btn").click(function() {
+            var curlocation = ""
+            if (navigator.geolocation) { // device can return its location
+            navigator.geolocation.getCurrentPosition(function(position) {
+                 console.log(position.coords.latitude);
+                 console.log(position.coords.longitude);
+                 curlocation += position.coords.latitude;
+                 curlocation += ", ";
+                 curlocation += position.coords.longitude;
+                 document.getElementById('origin-loc').value=curlocation;
+            })
+            }
+        });
+
+
+        $("#submit-btn").click(function() {
+            $('#input-form').hide();
+            $('#progress').show();
+        });
+
+        $(window).load(function() {
+             $('#progress').hide();
+          });
+
+
 
 
         function onEachFeature(feature, layer) {
