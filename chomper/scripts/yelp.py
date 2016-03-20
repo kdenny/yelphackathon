@@ -229,23 +229,25 @@ def calcRestaurantList2(latlngs, cuisines, distance):
                         # print ("The worst restaurant is {0}".format(worst))
                 elif len(restlist) >= 40:
                     ratings.sort()
-                    if float(processedyelpresults[result]['rating']) > ratings[0]:
+                    minrating = ratings[0]
+                    if float(processedyelpresults[result]['rating']) > ratings[0] and ratings[0] < 3.5:
                         if worst in restlist:
                             ratings.remove(minrating)
                             restlist.remove(restlist.index(worst))
-                            # print ("Removed {0}, which had a rating of {1}".format(worst, minrating))
+                            # print ("Removed {0}, which had a rating of {1}. It was in restlist".format(worst, minrating))
                             if len(restlist) <= 45:
                                 restlist.append(processedyelpresults[result])
                                 # print ("Added {0}, which had a rating of {1}".format(result, processedyelpresults[result]['rating']))
                         else:
-                            minrating = ratings[0]
+                            minrating = float(ratings[0])
                             # print ("The minimum rating for a restaurant is {0}".format(minrating))
                             for r in restlist:
                                 # print (r)
-                                if r['rating'] == minrating:
+                                if float(r['rating']) == minrating:
                                     restlist.remove(r)
-                                    ratings.remove(minrating)
-                                    # print ("Removed {0}, which had a rating of {1}".format(r, minrating))
+                                    # print ("Removed {0}, which had a rating of {1}. Matched on minrating".format(r, minrating))
+                                    if minrating in ratings:
+                                        ratings.remove(minrating)
                             if len(restlist) <= 45:
                                 restlist.append(processedyelpresults[result])
                                 # print ("Added {0}, which had a rating of {1}".format(result, processedyelpresults[result]['rating']))

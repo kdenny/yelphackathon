@@ -68,7 +68,9 @@ LEAFLET_CONFIG = {
     'MAX_ZOOM': 18,
     'DEFAULT_ZOOM': 13,
     'RESET_VIEW': False,
-    'TILES': 'http://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.png',
+    # 'TILES': 'http://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.png',
+    # 'TILES': 'http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+    'TILES': 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
 }
 
 SERIALIZATION_MODULES = {

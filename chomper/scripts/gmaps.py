@@ -148,7 +148,7 @@ def createAddressList(origin,destination,mode,distance,intermediatepoints):
         if (numpoints - (discardpoints * 2)) > 25:
             scalar = 2
     if mode == 'driving':
-        segments = int(float(distance) / .5)
+        segments = int(float(distance) / .75)
         scalar = int(float(numpoints) / float(segments))
     if mode == 'walking':
         segments = int(float(distance) / .25)
@@ -235,9 +235,31 @@ def calcRestaurantDistanceMatrix(restaurants,origin,destination,modal,users,addr
     userpoints = [origin, destination]
 
     gmappr = googlemaps.Client(key='AIzaSyB17F8Q89ZuNlPN3fAXinQUDK83Bufmmto')
+    numrest = len(restaurants)
+    placed = 0
+    n = 0
+    listrests = []
+
+    # if numrest <= 45:
+    #     lr = restaurants[n:45]
+    #     placed = numrest
+    #     listrests.append(lr)
+
+    # while placed <= numrest:
+    #     idelta = numrest - placed
+    #     if idelta >= 45:
+    #         lr = restaurants[placed:placed+45]
+    #         placed += 45
+    #     else:
+    #         lr = restaurants[placed:placed+idelta]
+    #         placed += idelta
+    #     listrests.append(lr)
+
+
+    # for restsegment in listrests:
+    allrestresults = {}
     rmatrix = gmappr.distance_matrix(restaurants, userpoints, mode=modal)['rows']
 
-    allrestresults = {}
     restcount = 0
     for rest in rmatrix:
         restresults = {}
