@@ -51,7 +51,7 @@
     }
     #sidebar {
       width: 270px;
-      height: 78vh;
+      height: 77vh;
       max-width: 100%;
       overflow: auto;
       float: left;
@@ -242,43 +242,83 @@
                         <div class="col-sm-12 col-md-12 text-center">
                             <select name="cuisine" style="width: 100%">
                                 <option selected="selected" disabled>Select a cuisine</option>
-                                <option value="Pizza">Pizza</option>
+                                <option data-divider="true">----Quick / Casual Bites----</option>
+                                <option value="Bagels">Bagels</option>
                                 <option value="BBQ">BBQ</option>
-                                <option value="Fast Food">Fast Food</option>
+                                <option value="Breakfast">Breakfast / Brunch</option>
                                 <option value="Burgers">Burgers</option>
-                                <option value="Chicken">Chicken</option>
-                                <option value="Sandwiches">Sandwiches</option>
+                                <option value="Cheesesteaks">Cheesesteaks</option>
+                                <option value="Coffee">Coffee</option>
+                                <option value="Fast Food">Fast Food</option>
+                                <option value="Pizza">Pizza</option>
                                 <option value="Salad">Salad</option>
+                                <option value="Sandwiches">Sandwiches</option>
                                 <option value="Soup">Soup</option>
-{#                                <option value="Italian / Pizza">Italian / Pizza</option>#}
-                                <option data-divider="true">------</option>
+
+                                <option data-divider="true">---Sweets----</option>
+                                <option value="Bakeries">Bakeries</option>
+                                <option value="Cupcakes">Cupcakes</option>
+                                <option value="Desserts">Desserts</option>
+                                <option value="Donuts">Donuts</option>
+                                <option value="Gelato">Gelato</option>
+                                <option value="Ice Cream / FroYo">Ice Cream / FroYo</option>
+
+                                <option data-divider="true">----Bars / Alcohol----</option>
+                                <option value="Beer / Wine Stores">Beer / Wine Stores</option>
+                                <option value="Beer Bars">Beer Bars</option>
+                                <option value="Beer Gardens">Beer Gardens</option>
+                                <option value="Breweries">Breweries</option>
+                                <option value="Cocktail Bars">Cocktail Bars</option>
+                                <option value="Distilleries">Distilleries</option>
+                                <option value="Dive Bars">Dive Bars</option>
+                                <option value="Pubs">Pubs</option>
+                                <option value="Sports Bars">Sports Bars</option>
+                                <option value="Wineries">Wineries</option>
+                                <option value="Wine Bars">Wine Bars</option>
+
+                                <option data-divider="true">---Continental----</option>
                                 <option value="American">American</option>
+                                <option value="Diner">Diner</option>
+                                <option value="Seafood">Seafood</option>
                                 <option value="Southern">Southern</option>
                                 <option value="Steakhouse">Steakhouse</option>
-                                <option value="Fast Food">Fast Food</option>
-                                <option value="Diner / Breakfast">Diner / Breakfast</option>
-{#                                <option value="Casual">Casual</option>#}
-                                <option value="Seafood">Seafood</option>
                                 <option value="Vegetarian">Vegetarian</option>
-                                <option data-divider="true"></option>
+
+                                <option data-divider="true">----Central / South America----</option>
+                                <option value="Brazilian">Brazilian</option>
                                 <option value="Caribbean">Caribbean</option>
-                                <option value="Latin American">Latin American</option>
+                                <option value="Cuban">Cuban</option>
+                                <option value="Empanadas">Empanadas</option>
+                                <option value="Latin">Latin</option>
                                 <option value="Mexican">Mexican</option>
-                                <option data-divider="true"></option>
-                                <option value="Thai">Thai</option>
+
+                                <option data-divider="true">----Asia-----</option>
                                 <option value="Chinese">Chinese</option>
                                 <option value="Indian">Indian</option>
+                                <option value="Japanese">Japanese</option>
+                                <option value="Sushi">Sushi</option>
+                                <option value="Thai">Thai</option>
                                 <option value="Vietnamese">Vietnamese</option>
-                                <option value="Japanese / Sushi">Japanese / Sushi</option>
-                                <option data-divider="true"></option>
+
+                                <option data-divider="true">----Africa / Middle East----</option>
                                 <option value="African">African</option>
-                                <option value="Spanish / Tapas">Spanish / Tapas</option>
-                                <option value="Mediterranean">Mediterranean</option>
+                                <option value="Ethiopian">Ethiopian</option>
+                                <option value="Kosher">Kosher</option>
+                                <option value="Middle Eastern">Middle Eastern</option>
+
+                                <option data-divider="true">----Europe----</option>
+                                <option value="Belgian">Belgian</option>
+                                <option value="British">British</option>
+                                <option value="French">French</option>
                                 <option value="Greek">Greek</option>
-                                <option value="French / Belgian">French / Belgian</option>
-                                <option value="Pub">Pub</option>
+                                <option value="Irish">Irish</option>
+                                <option value="Mediterranean">Mediterranean</option>
+                                <option value="Spanish / Tapas">Spanish / Tapas</option>
+
                             </select>
                         </div>
+                        <br>
+                        <br>
 
 						<div class="col-xs-12 text-center">
                             <br>
@@ -294,13 +334,15 @@
 									<input type="radio" name="radius" value="5" /> 5 mi.
 								</label>
 							</div>
+                            <br>
+                            <br>
 						</div>
 
-						<div class="col-xs-12 text-center">
-							<div class="checkbox">
-								<label><input type="checkbox" value="">Only show 'Open Now'?</label>
-							</div>
-						</div>
+{#						<div class="col-xs-12 text-center">#}
+{#							<div class="checkbox">#}
+{#								<label><input type="checkbox" value="">Only show 'Open Now'?</label>#}
+{#							</div>#}
+{#						</div>#}
 
                     </div>
                 </div>
@@ -369,6 +411,28 @@
                 // Add GeoJSON layer
                 L.geoJson(data).addTo(map);
             });
+
+            var userpointsurl = '{% url "userpoints" %}';
+            // Download GeoJSON via Ajax
+            $.getJSON(userpointsurl, function (data) {
+                // Add GeoJSON layer
+
+                L.geoJson(data, {
+                    pointToLayer: function (feature, latlng) {
+                        return L.marker(latlng, {
+                            icon: L.icon({
+                                iconUrl: 'http://i.imgur.com/cBNFL6T.png',
+                                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/images/marker-shadow.png',
+                                iconSize: [20, 33],
+                                iconAnchor: [12, 41],
+                                popupAnchor: [1, -34],
+                                shadowSize: [41, 41]
+                            })
+                        });
+                    }
+                }).addTo(map);
+            });
+
 
             var datapointsurl = '{% url "datapoints" %}';
             // Download GeoJSON via Ajax

@@ -25,7 +25,7 @@ TOKEN_SECRET = 'Rv4GrlYxYGhxUs14s0VBfk7JLJY'
 API_HOST = 'api.yelp.com'
 DEFAULT_TERM = 'pizza'
 DEFAULT_LOCATION = 'Washington, DC'
-SEARCH_LIMIT = 3
+SEARCH_LIMIT = 5
 SEARCH_PATH = '/v2/search/'
 BUSINESS_PATH = '/v2/business/'
 
@@ -78,8 +78,11 @@ def getCuisines(ogcuisine):
     cuisinecodes['Italian / Pizza'] = ['pizza', 'italian']
     cuisinecodes['Pizza'] = ['pizza']
     cuisinecodes['Italian'] = ['italian']
-    cuisinecodes['African'] = ['african', 'ethiopian']
+    cuisinecodes['African'] = ['african']
+    cuisinecodes['Ethiopian'] = ['ethiopian']
     cuisinecodes['American'] = ['newamerican', 'tradamerican']
+    cuisinecodes['New American'] = ['newamerican']
+    cuisinecodes['Trad. American'] = ['tradamerican']
     cuisinecodes['BBQ'] = ['bbq']
     cuisinecodes['French / Belgian'] = ['french', 'belgian']
     cuisinecodes['French'] = ['french']
@@ -102,7 +105,7 @@ def getCuisines(ogcuisine):
     cuisinecodes['Japanese / Sushi'] = ['japanese', 'sushi']
     cuisinecodes['Japanese'] = ['japanese']
     cuisinecodes['Sushi'] = ['sushi']
-    cuisinecodes['Mediterranean'] = ['mediterranean','mideastern','kosher']
+    cuisinecodes['Mediterranean'] = ['mediterranean']
     cuisinecodes['Middle Eastern'] = ['mideastern']
     cuisinecodes['Kosher'] = ['kosher']
     cuisinecodes['Seafood'] = ['seafood']
@@ -113,6 +116,24 @@ def getCuisines(ogcuisine):
     cuisinecodes['Thai'] = ['thai']
     cuisinecodes['Vegetarian'] = ['vegetarian']
     cuisinecodes['Vietnamese'] = ['vietnamese']
+    cuisinecodes['Coffee'] = ['coffee']
+    cuisinecodes['Bagels'] = ['bagels']
+    cuisinecodes['Bakeries'] = ['bakeries']
+    cuisinecodes['Beer / Wine Stores'] = ['beer_and_wine']
+    cuisinecodes['Cupcakes'] = ['cupcakes']
+    cuisinecodes['Breweries'] = ['breweries']
+    cuisinecodes['Desserts'] = ['desserts']
+    cuisinecodes['Distilleries'] = ['distilleries']
+    cuisinecodes['Donuts'] = ['donuts']
+    cuisinecodes['Empanadas'] = ['empanadas']
+    cuisinecodes['Gelato'] = ['gelato']
+    cuisinecodes['Ice Cream / FroYo'] = ['icecream']
+    cuisinecodes['Beer Bars'] = ['beerbar']
+    cuisinecodes['Cocktail Bars'] = ['cocktailbars']
+    cuisinecodes['Dive Bars'] = ['divebar']
+    cuisinecodes['Sports Bars'] = ['sportsbars']
+    cuisinecodes['Wine Bars'] = ['wine_bars']
+    cuisinecodes['Beer Gardens'] = ['beergardens']
 
     return cuisinecodes[ogcuisine]
 
@@ -193,7 +214,7 @@ def calcRestaurantList(addresses, cuisines, distance):
 
     return restlist
 
-def calcRestaurantList2(latlngs, cuisines, distance):
+def calcRestaurantList2(latlngs, cuisines, distance, radius):
     """Calls the Yelp API to search around each intermediate route point the function to process the
     yelp results, and adds all new restaurants to a list.
 
@@ -215,7 +236,7 @@ def calcRestaurantList2(latlngs, cuisines, distance):
     worst = ''
     ratings = []
     for point in latlngs:
-        yelpresults = search2(cuisine,point,distance)['businesses']
+        yelpresults = search2(cuisine,point,distance,radius)['businesses']
         processedyelpresults = processResults(yelpresults)
         for result in processedyelpresults:
             if (result not in used):
@@ -257,7 +278,7 @@ def calcRestaurantList2(latlngs, cuisines, distance):
 
     return restlist
 
-def search(term, location, distance):
+def search(term, location, distance, radius):
     """Query the Search API by a search term and location.
 
     Args:
@@ -275,15 +296,16 @@ def search(term, location, distance):
     if distance > 5:
         scalar = int(float(distance) / 5.0)
 
+    metradius = 1609 * int(radius)
     url_params = {
         'category_filter': term.replace(' ', '+'),
-        'radius_filter': 1000,
+        'radius_filter': metradius,
         'location': location.replace(' ', '+'),
         'limit': SEARCH_LIMIT
     }
     return request(API_HOST, SEARCH_PATH, url_params=url_params)
 
-def search2(term, location, distance):
+def search2(term, location, distance, radius):
     """Query the Search API by a search term and location.
 
     Args:
@@ -301,6 +323,8 @@ def search2(term, location, distance):
     if distance > 5:
         scalar = int(float(distance) / 5.0)
 
+    metradius = 1609 * int(radius)
+    print metradius
     url_params = {
         'category_filter': term.replace(' ', '+'),
         'radius_filter': 1000,

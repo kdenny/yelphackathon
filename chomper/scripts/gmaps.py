@@ -334,19 +334,16 @@ def addDistanceToRestaurants(restaurants, distancematrix, addressdict, initdista
 
     return newrests
 
-def getCurrentLocation():
-    """Uses the Google Distance Matrix API to calculate the travel times from the origin and destination to each restaurant
+def geocodr(org, dest):
+    origpointa = gmapper.geocode(org)[0]['geometry']['location']
+    origpoint = [origpointa['lat'],origpointa['lng']]
+    pprint (origpoint)
+    destpointa = gmapper.geocode(dest)[0]['geometry']['location']
+    destpoint = [destpointa['lat'], destpointa['lng']]
 
-    Args:
+    userpoints = [origpoint, destpoint]
 
-    Returns:
-        currentlocation (dict): The user's current location
-
-    """
-
-    gmappr = googlemaps.Client(key='AIzaSyB17F8Q89ZuNlPN3fAXinQUDK83Bufmmto')
-    rmatrix = gmappr.distance_matrix(restaurants, userpoints, mode=modal)['rows']
-
+    return userpoints
 
 def makePoints(points):
     count = 1
@@ -371,9 +368,22 @@ def makeLines(points):
     li.save()
     linesgeojson = seriallines()
 
+def makeUPoints(userpoints):
+    UserPoint.objects.all().delete()
+    count = 1
+    for point in userpoints:
+        up = UserPoint()
+        up.geom = {'type': 'Point', 'coordinates': [point[1], point[0]]}
+        up.name = '{0}'.format(count)
+        up.save()
+        count = count + 1
 
 def seriallines():
     return serialize('geojson', RouteLine.objects.all(),
+              geometry_field='geom')
+
+def serialuserpoints():
+    return serialize('geojson', UserPoint.objects.all(),
               geometry_field='geom')
 
 def serialrestpoints():
@@ -395,6 +405,9 @@ def makeRestaurantPoints(restaurants):
         else:
             rp.Color = 'red'
         rp.isclosed = rest['closed']
+        rp.origdist = rest['origintime']
+        rp.destdist = rest['destinationtime']
+        rp.extradist = rest['outofthewaytime']
         rp.address = rest['address']
         rp.save()
     restpointsjson = serialrestpoints()

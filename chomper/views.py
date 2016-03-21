@@ -17,7 +17,7 @@ from rest_framework import viewsets, mixins
 
 # Scripts
 from scripts.yelp import calcRestaurantList, getRestaurantAddresses, getRestaurantAddressDict, getCuisines, calcRestaurantList2
-from scripts.gmaps import calcRoutePoints, createAddressList, makeRestaurantPoints, calcRestaurantDistanceMatrix, addDistanceToRestaurants, createLatLngs
+from scripts.gmaps import calcRoutePoints, createAddressList, makeRestaurantPoints, calcRestaurantDistanceMatrix, addDistanceToRestaurants, createLatLngs, geocodr, makeUPoints
 
 # Python
 import oauth2 as oauth
@@ -73,16 +73,15 @@ def googlemaps(request):
         # if mode == '':
         #     mode = 'driving'
         ogcuisine = str(request.POST.get('cuisine'))
+        radius = int(request.POST.get('radius'))
         cuisines = getCuisines(ogcuisine)
 
         routeresults = calcRoutePoints(org,dest,mode)
         points = routeresults['points']
         distance = routeresults['distance']
         duration = int(routeresults['durnum'])
-        # addresses = createAddressList(org,dest,mode,distance,points)
         latlngs = createLatLngs(org,dest,mode,distance,points)
-        # restaurants = calcRestaurantList(addresses,cuisines,distance)
-        restaurants = calcRestaurantList2(latlngs,cuisines,distance)
+        restaurants = calcRestaurantList2(latlngs,cuisines,distance,radius)
         restaurantaddresses = getRestaurantAddresses(restaurants)
         restaurantaddressdict = getRestaurantAddressDict(restaurants)
 
@@ -91,6 +90,8 @@ def googlemaps(request):
         restaurants = addDistanceToRestaurants(restaurants,restaurantdistancematrix,restaurantaddressdict,duration)
 
         makeRestaurantPoints(restaurants)
+        userlocs = geocodr(org, dest)
+        makeUPoints(userlocs)
 
         datum['numrest'] = len(restaurants)
         datum['cuisine'] = ogcuisine

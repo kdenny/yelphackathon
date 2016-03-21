@@ -10,16 +10,21 @@ class RestaurantPoint(models.Model):
     geom = PointField()
     name = models.TextField(max_length=200)
     rating = models.FloatField(max_length=5)
+    origdist = models.CharField(max_length=10)
+    destdist = models.CharField(max_length=10)
+    extradist = models.CharField(max_length=10)
     Color = models.TextField(max_length=200)
     isclosed = models.BooleanField(default=False)
     address = models.TextField(max_length=200)
 
     @property
     def popupContent(self):
-        return '{0}<br>{1}'.format(
+        return '<b>{0}</b><br>Rating: {1}<br>Time from Origin: {2}<br> Time from Destination: {3}<br>Out of the Way Time: {4}'.format(
           self.name,
           self.rating,
-          self.Color)
+          self.origdist,
+          self.destdist,
+          self.extradist)
 
 class IntermediatePoint(models.Model):
     geom = PointField()
@@ -43,8 +48,6 @@ class UserProfile(models.Model):
 class UserLocation(models.Model):
     user = models.ForeignKey(User)
     address = models.TextField(max_length=200, default="250 K Street NE")
-    city = models.TextField(max_length=200, default="Washington")
-    state = models.TextField(max_length=200, default="Washington")
     latlng = models.OneToOneField(UserPoint)
 
     def __unicode__(self):
