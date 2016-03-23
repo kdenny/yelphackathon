@@ -16,7 +16,7 @@ from django.http import JsonResponse
 from rest_framework import viewsets, mixins
 
 # Scripts
-from scripts.yelp import calcRestaurantList, getRestaurantAddresses, getRestaurantAddressDict, getCuisines, calcRestaurantList2
+from scripts.yelp import calcRestaurantList, getRestaurantAddresses, getRestaurantAddressDict, getCuisines, calcRestaurantList2, getQueryType
 from scripts.gmaps import calcRoutePoints, createAddressList, makeRestaurantPoints, calcRestaurantDistanceMatrix, addDistanceToRestaurants, createLatLngs, geocodr, makeUPoints
 
 # Python
@@ -74,7 +74,9 @@ def googlemaps(request):
         #     mode = 'driving'
         ogcuisine = str(request.POST.get('cuisine'))
         radius = int(request.POST.get('radius'))
+        symbology = str(request.POST.get('symbolS'))
         cuisines = getCuisines(ogcuisine)
+        establishment = getQueryType(ogcuisine)
 
         routeresults = calcRoutePoints(org,dest,mode)
         points = routeresults['points']
@@ -99,6 +101,8 @@ def googlemaps(request):
         datum['destination'] = dest
         datum['mode'] = mode
         datum['duration'] = routeresults['duration']
+        datum['symbology'] = symbology
+        datum['establishment'] = establishment
         print(datum)
 
     return render(request, 'chomper/googlemaps.html', { 'data': restaurants, 'datum': datum})

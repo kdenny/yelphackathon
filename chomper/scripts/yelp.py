@@ -137,6 +137,80 @@ def getCuisines(ogcuisine):
 
     return cuisinecodes[ogcuisine]
 
+def getQueryType(ogcuisine):
+    """Processes the input cuisine alias selected by the user, and selects the list of cuisines to query the Yelp API.
+
+    Args:
+        ogcuisine (str): The cuisine alias selected by the user
+
+    Returns:
+        cuisinecodes (list): The list of cuisines to be queried for the API
+
+    """
+    establishmenttype = {}
+    establishmenttype['Fast Food'] = 'Fast Food restaurants'
+    establishmenttype['Burgers'] = 'Burger places'
+    establishmenttype['Cheesesteaks'] = 'Cheesesteak spots'
+    establishmenttype['Gastropubs'] = 'Gastropubs'
+    establishmenttype['Breakfast'] = 'Breakfast spots'
+    establishmenttype['Diner'] = 'Diners'
+    establishmenttype['Salad'] = 'Salad places'
+    establishmenttype['Sandwiches'] = 'Sandwich places'
+    establishmenttype['Soup'] = 'Soup places'
+    establishmenttype['Pizza'] = 'Pizza places'
+    establishmenttype['Italian'] = 'Italian restaurants'
+    establishmenttype['African'] = 'African restaurants'
+    establishmenttype['Ethiopian'] = 'Ethiopian restaurants'
+    establishmenttype['American'] = 'American restaurants'
+    establishmenttype['BBQ'] = 'BBQ restaurants'
+    establishmenttype['French'] = 'French restaurants'
+    establishmenttype['Belgian'] = 'Belgian restaurants'
+    establishmenttype['British'] = 'British restaurants'
+    establishmenttype['Irish'] = 'Irish restaurants'
+    establishmenttype['Southern'] = 'Southern restaurants'
+    establishmenttype['Cajun'] = 'Cajun restaurants'
+    establishmenttype['Caribbean'] = 'Caribbean restaurants'
+    establishmenttype['Chinese'] = 'Chinese restaurants'
+    establishmenttype['Latin American'] = 'Latin restaurants'
+    establishmenttype['Cuban'] = 'Cuban restaurants'
+    establishmenttype['Latin'] = 'Latin restaurants'
+    establishmenttype['Brazilian'] = 'Brazilian'
+    establishmenttype['Mexican'] = 'Mexican'
+    establishmenttype['Tex-Mex'] = 'Tex-Mex restaurants'
+    establishmenttype['Greek'] = 'Greek restaurants'
+    establishmenttype['Indian'] = 'Indian restaurants'
+    establishmenttype['Japanese'] = 'Japanese restaurants'
+    establishmenttype['Sushi'] = 'Sushi restaurants'
+    establishmenttype['Mediterranean'] = 'Mediterranean restaurants'
+    establishmenttype['Middle Eastern'] = 'Middle Eastern restaurants'
+    establishmenttype['Kosher'] = 'Kosher restaurants'
+    establishmenttype['Seafood'] = 'Seafood restaurants'
+    establishmenttype['Spanish / Tapas'] = 'Spanish / Tapas restaurants'
+    establishmenttype['Steakhouse'] = 'Steakhouses'
+    establishmenttype['Thai'] = 'Thai restaurants'
+    establishmenttype['Vegetarian'] = 'Vegetarian restaurants'
+    establishmenttype['Vietnamese'] = 'Vietnamese restaurants'
+    establishmenttype['Coffee'] = 'Coffee shops'
+    establishmenttype['Bagels'] = 'Bagel shops'
+    establishmenttype['Bakeries'] = 'Bakeries'
+    establishmenttype['Beer / Wine Stores'] = 'Beer and Wine stores'
+    establishmenttype['Cupcakes'] = 'Cupcake shops'
+    establishmenttype['Breweries'] = 'Breweries'
+    establishmenttype['Desserts'] = 'Dessert spots'
+    establishmenttype['Distilleries'] = 'Distilleries'
+    establishmenttype['Donuts'] = 'Donut shops'
+    establishmenttype['Empanadas'] = 'Empanada spots'
+    establishmenttype['Gelato'] = 'Gelato spots'
+    establishmenttype['Ice Cream / FroYo'] = 'Ice Cream shops'
+    establishmenttype['Beer Bars'] = 'Beer Bars'
+    establishmenttype['Cocktail Bars'] = 'Cocktail Bars'
+    establishmenttype['Dive Bars'] = 'Dive Bars'
+    establishmenttype['Sports Bars'] = 'Sports Bars'
+    establishmenttype['Wine Bars'] = 'Wine Bars'
+    establishmenttype['Beer Gardens'] = 'Beer Gardens'
+
+    return establishmenttype[ogcuisine]
+
 
 def getRestaurantAddressDict(restaurants):
     """Creates a dictionary for identifying restaurants based on their address, to be used in distance matrix calculations.

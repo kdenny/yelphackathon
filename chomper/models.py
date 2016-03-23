@@ -11,20 +11,25 @@ class RestaurantPoint(models.Model):
     name = models.TextField(max_length=200)
     rating = models.FloatField(max_length=5)
     origdist = models.CharField(max_length=10)
+    origdirlink = models.TextField(max_length=200)
     destdist = models.CharField(max_length=10)
     extradist = models.CharField(max_length=10)
+    link = models.TextField(max_length=200)
     Color = models.TextField(max_length=200)
+    CentColor = models.TextField(max_length=200)
     isclosed = models.BooleanField(default=False)
     address = models.TextField(max_length=200)
 
     @property
     def popupContent(self):
-        return '<b>{0}</b><br>Rating: {1}<br>Time from Origin: {2}<br> Time from Destination: {3}<br>Out of the Way Time: {4}'.format(
+        return '<b>{0} </b><a target="_blank" href={5}>(link)</a><br>Rating: {1}<br>Origin Time: {2} min <a target="_blank" href={6}>(directions)</a><br>Destination Time: {3} min <br>Out of the Way Time: {4}'.format(
           self.name,
           self.rating,
           self.origdist,
           self.destdist,
-          self.extradist)
+          self.extradist,
+          self.link,
+          self.origdirlink)
 
 class IntermediatePoint(models.Model):
     geom = PointField()

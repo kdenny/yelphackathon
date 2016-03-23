@@ -20,8 +20,8 @@ import sys
 from chomper.models import *
 
 # Kevin's Key
-# gmapper = googlemaps.Client(key='AIzaSyCUSkUaTU4DJhuheYoh3_x2y1BBD40N3yc')
-gmapper = googlemaps.Client(key='AIzaSyCUyRHrPjwl5F-hMit0-1lyZTyf6rKDMb8')
+gmapper = googlemaps.Client(key='AIzaSyCUSkUaTU4DJhuheYoh3_x2y1BBD40N3yc')
+# gmapper = googlemaps.Client(key='AIzaSyCUyRHrPjwl5F-hMit0-1lyZTyf6rKDMb8')
 
 
 
@@ -234,7 +234,8 @@ def calcRestaurantDistanceMatrix(restaurants,origin,destination,modal,users,addr
     """
     userpoints = [origin, destination]
 
-    gmappr = googlemaps.Client(key='AIzaSyB17F8Q89ZuNlPN3fAXinQUDK83Bufmmto')
+    # gmappr = googlemaps.Client(key='AIzaSyB17F8Q89ZuNlPN3fAXinQUDK83Bufmmto')
+    gmappr = googlemaps.Client(key='AIzaSyCUyRHrPjwl5F-hMit0-1lyZTyf6rKDMb8')
     numrest = len(restaurants)
     placed = 0
     n = 0
@@ -404,10 +405,25 @@ def makeRestaurantPoints(restaurants):
             rp.Color = 'orange'
         else:
             rp.Color = 'red'
+        # < .25 or > .75
+        if ((float(rest['origintime']) > (float(rest['destinationtime']) * 4))) or ((float(rest['destinationtime']) > (float(rest['origintime']) * 4))):
+            rp.CentColor = 'gray'
+        # .25-.4 or .6-.75
+        if ((float(rest['origintime']) <= (float(rest['destinationtime']) * 1.4))) and ((float(rest['destinationtime']) <= (float(rest['origintime']) * 1.4))):
+            rp.CentColor = 'violet'
+        elif ((float(rest['origintime']) > (float(rest['destinationtime']) * 1.4))):
+            rp.CentColor = 'blue'
+        elif ((float(rest['destinationtime']) > (float(rest['origintime']) * 1.4))):
+            rp.CentColor = 'red'
         rp.isclosed = rest['closed']
         rp.origdist = rest['origintime']
+        addy = rest['address'] + rest['city']
+        addstrip = addy.replace(" ", "+")
+        addstrip = addstrip.replace(",", "+")
+        rp.origdirlink = 'https://maps.google.com?saddr=Current+Location&daddr={0}'.format(addstrip)
         rp.destdist = rest['destinationtime']
         rp.extradist = rest['outofthewaytime']
+        rp.link = rest['url']
         rp.address = rest['address']
         rp.save()
     restpointsjson = serialrestpoints()

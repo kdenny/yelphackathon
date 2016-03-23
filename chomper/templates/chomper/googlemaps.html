@@ -102,8 +102,8 @@
                           <button type="button" class="btn btn-xs btn-default" id="search-again-btn"><span class="glyphicon glyphicon-arrow-left"></span>Search Again</button>
                         </a>
                     </div>
-                    <div class="col-sm-8 col-md-8 text-center" style="font-size:16px">
-                            Viewing <strong>{{ datum.numrest }}</strong> {{ datum.cuisine }} restaurants
+                    <div class="col-sm-7 col-md-7 text-center" style="font-size:16px">
+                            Viewing <strong>{{ datum.numrest }}</strong> {{ datum.establishment }}
                              <a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="topbar-toggle-btn" style="font-size:11px"><span class="glyphicon glyphicon-triangle-bottom"></span>(Show Details)</a>
                     </div>
         </div>
@@ -120,8 +120,10 @@
             <div class="col-sm-12 col-md-12 text-center">
             <div class="panel panel-default">
 					<div class="panel-body">
-                        <div class="col-sm-12 col-md-12 text-center" style="font-size:14px">
-                                You are viewing <strong>{{ datum.numrest }} {{ datum.cuisine }} </strong> restaurants between {{ datum.origin }} and {{ datum.destination }} .
+                        <div class="col-sm-2 col-md-2 text-left" style="font-size:12px">
+                        </div>
+                        <div class="col-sm-8 col-md-8 text-center" style="font-size:14px">
+                                You are viewing <strong>{{ datum.numrest }} </strong> {{ datum.establishment }} between {{ datum.origin }} and {{ datum.destination }} .
                             <br>
                                 Traveling via {{ datum.mode }} , you are about {{ datum.duration }} away from this point.
                             <a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="topbar-toggle-off" style="font-size:11px"><span class="glyphicon glyphicon-triangle-top"></span>(Hide Details)</a>
@@ -318,11 +320,15 @@
                             </select>
                         </div>
                         <br>
-                        <br>
 
-						<div class="col-xs-12 text-center">
+                        <div>
                             <br>
-                            <label>Search Radius</label>
+                        </div>
+                            <div class="col-xs-1 text-right"></div>
+                            <div class="col-xs-4 text-right">
+                            <label>Search Radius:</label>
+                            </div>
+                        <div class="col-xs-7 text-left">
 							<div class="btn-group" data-toggle="buttons">
 								<label class="btn btn-default">
 									<input type="radio" name="radius" value="1" checked="checked" /> 1 mi.
@@ -334,15 +340,20 @@
 									<input type="radio" name="radius" value="5" /> 5 mi.
 								</label>
 							</div>
-                            <br>
-                            <br>
-						</div>
+                        </div>
+{#                        <br>#}
+                        <div>
+                            <div class="col-xs-1 text-right"></div>
+                            <div class="col-xs-4 text-right">
+                                <label>Find: </label>
+                            </div>
+                            <div class="col-xs-7 text-left">
+                              <input type="radio" name="symbolS" value="Best" checked="checked">Best along route</input>
+                              <br>
+                              <input type="radio" name="symbolS" value="Central">Most centrally located</input>
+                            </div>
+                        </div>
 
-{#						<div class="col-xs-12 text-center">#}
-{#							<div class="checkbox">#}
-{#								<label><input type="checkbox" value="">Only show 'Open Now'?</label>#}
-{#							</div>#}
-{#						</div>#}
 
                     </div>
                 </div>
@@ -354,13 +365,31 @@
 	  </section>
         {% endif %}
 
-        <div class="col-xs-12 text-center" id="progress" style="color:white;font-size:18px">Sit tight! We're crunching your results...</div>
+        <div class="col-xs-12 text-center" id="progress" style="color:white;font-size:18px;display:none;">
+            <div class="col-xs-3 text-center"></div>
+            <div class="col-xs-6 text-center">
+                <iframe src="//giphy.com/embed/3o7WTJ736sCIMEVCMg" width="175" height="161" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="http://giphy.com/gifs/cartoon-shark-3o7WTJ736sCIMEVCMg"></a></p>
+                Sit tight! We're crunching your results...
+            </div>
+        </div>
 
 
 
 
 		<script type="text/javascript">
 
+        $("#submit-btn").click(function() {
+            $('#input-form').hide();
+            $('#progress').show();
+        });
+
+        $(window).load(function() {
+             $('#progress').hide();
+          });
+
+
+        var symbology = "{{ datum.symbology }}";
+        console.log(symbology);
 
         $(document).ready(function(){
             $('[data-toggle="tooltip"]').tooltip();
@@ -380,15 +409,6 @@
             }
         });
 
-
-        $("#submit-btn").click(function() {
-            $('#input-form').hide();
-            $('#progress').show();
-        });
-
-        $(window).load(function() {
-             $('#progress').hide();
-          });
 
 
 
@@ -416,7 +436,6 @@
             // Download GeoJSON via Ajax
             $.getJSON(userpointsurl, function (data) {
                 // Add GeoJSON layer
-
                 L.geoJson(data, {
                     pointToLayer: function (feature, latlng) {
                         return L.marker(latlng, {
@@ -434,13 +453,40 @@
             });
 
 
+
+{##}
+{#                $.getJSON(datapointsurl, function (data) {#}
+{#                    // Add GeoJSON layer#}
+{##}
+{#                    centrallayer = L.geoJson(data, {#}
+{#                        pointToLayer: function (feature, latlng) {#}
+{#                            return L.marker(latlng, {#}
+{#                                icon: L.icon({#}
+{#                                    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-' + feature.properties.CentColor + '.png',#}
+{#                                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/images/marker-shadow.png',#}
+{#                                    iconSize: [25, 41],#}
+{#                                    iconAnchor: [12, 41],#}
+{#                                    popupAnchor: [1, -34],#}
+{#                                    shadowSize: [41, 41]#}
+{#                                })#}
+{#                            });#}
+{#                        },#}
+{#                        onEachFeature: onEachFeature#}
+{#                    });#}
+{#                    centrallayer.addTo(map);#}
+{##}
+{#                    map.fitBounds(centrallayer.getBounds());#}
+{#                });#}
+{##}
+
+{#            }#}
             var datapointsurl = '{% url "datapoints" %}';
             // Download GeoJSON via Ajax
             $.getJSON(datapointsurl, function (data) {
                 // Add GeoJSON layer
 
-                L.geoJson(data, {
-                    pointToLayer: function(feature, latlng) {
+                bestlayer = L.geoJson(data, {
+                    pointToLayer: function (feature, latlng) {
                         return L.marker(latlng, {
                             icon: L.icon({
                                 iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-' + feature.properties.Color + '.png',
@@ -453,38 +499,83 @@
                         });
                     },
                     onEachFeature: onEachFeature
-                }).addTo(map);
+                })
+                centrallayer = L.geoJson(data, {
+                    pointToLayer: function (feature, latlng) {
+                        return L.marker(latlng, {
+                            icon: L.icon({
+                                iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-' + feature.properties.CentColor + '.png',
+                                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/images/marker-shadow.png',
+                                iconSize: [25, 41],
+                                iconAnchor: [12, 41],
+                                popupAnchor: [1, -34],
+                                shadowSize: [41, 41]
+                            })
+                        });
+                    },
+                    onEachFeature: onEachFeature
+                });
 
-                map.fitBounds(L.geoJson(data).getBounds());
-            });
+                if (symbology == 'Central') {
+                    centrallayer.addTo(map);
+                    var Legend = L.Control.extend({
+                      options: {
+                        position: 'bottomright'
+                      },
 
-            var Legend = L.Control.extend({
-              options: {
-                position: 'bottomright'
-              },
+                      onAdd: function (map) {
+                        var legend = L.DomUtil.create('div', 'map-legend', L.DomUtil.get('map'));
 
-              onAdd: function (map) {
-                var legend = L.DomUtil.create('div', 'map-legend', L.DomUtil.get('map'));
+                        legend.innerHTML = '<h4>Restaurant Points</h4>';
+                        legend.innerHTML += "<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png' width='12' height='14'>    Closer to Origin<br />"
+                        legend.innerHTML += "<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png' width='12' height='14'>   Centrally Located<br />"
+                        legend.innerHTML += "<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png' width='12' height='14'>  Closer to Destination<br />"
 
-                legend.innerHTML = '<h4>Restaurant Points</h4>';
-                legend.innerHTML += "<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png' width='12' height='14'>    Rating > 4.0<br />"
-                legend.innerHTML += "<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png' width='12' height='14'>   Rating 3.0 - 4.0<br />"
-                legend.innerHTML += "<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png' width='12' height='14'>  Rating < 3.0<br />"
+                        return legend;
+                      }
+                    });
 
-                return legend;
-              }
-            });
+                    map.addControl(new Legend());
+                    }
+                else{
+                    bestlayer.addTo(map);
+                    var Legend = L.Control.extend({
+                          options: {
+                            position: 'bottomright'
+                          },
+
+                          onAdd: function (map) {
+                            var legend = L.DomUtil.create('div', 'map-legend', L.DomUtil.get('map'));
+
+                            legend.innerHTML = '<h4>Restaurant Points</h4>';
+                            legend.innerHTML += "<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png' width='12' height='14'>    Rating > 4.0<br />"
+                            legend.innerHTML += "<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png' width='12' height='14'>   Rating 3.0 - 4.0<br />"
+                            legend.innerHTML += "<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png' width='12' height='14'>  Rating < 3.0<br />"
+
+                            return legend;
+                          }
+                        });
 
 
-            map.addControl(new Legend());
 
-{#            var oldZoom = L.control.zoom({#}
-{#                position: "topleft"#}
-{#            }).removeFrom(map);#}
+                        map.addControl(new Legend());
+                    }
 
-            var zoomControl = L.control.zoom({
-              position: "topright"
-            }).addTo(map);
+                    var baseMaps = {};
+                    var overlayMaps = {
+                        "Symbol by Central Location": centrallayer,
+                        "Symbol by Yelp Rating": bestlayer
+                    };
+
+                    L.control.layers(overlayMaps, baseMaps,{collapsed:false}).addTo(map);
+
+                map.fitBounds(bestlayer.getBounds());
+                });
+
+
+
+
+
         }
 
 
@@ -528,6 +619,10 @@
         $("#sidebar-switch-btn").click(function() {
           $("#sidebar").toggle();
                   map.invalidateSize();
+        });
+
+        $("#reload-map-btn").click(function() {
+          map_init();
         });
 
         function clearHighlight() {
