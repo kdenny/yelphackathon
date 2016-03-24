@@ -73,7 +73,7 @@ def googlemaps(request):
         # if mode == '':
         #     mode = 'driving'
         ogcuisine = str(request.POST.get('cuisine'))
-        radius = int(request.POST.get('radius'))
+        # radius = int(request.POST.get('radius'))
         symbology = str(request.POST.get('symbolS'))
         cuisines = getCuisines(ogcuisine)
         establishment = getQueryType(ogcuisine)
@@ -83,7 +83,7 @@ def googlemaps(request):
         distance = routeresults['distance']
         duration = int(routeresults['durnum'])
         latlngs = createLatLngs(org,dest,mode,distance,points)
-        restaurants = calcRestaurantList2(latlngs,cuisines,distance,radius)
+        restaurants = calcRestaurantList2(latlngs,cuisines,distance)
         restaurantaddresses = getRestaurantAddresses(restaurants)
         restaurantaddressdict = getRestaurantAddressDict(restaurants)
 

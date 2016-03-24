@@ -147,9 +147,23 @@ def createAddressList(origin,destination,mode,distance,intermediatepoints):
         discardpoints = 5
         if (numpoints - (discardpoints * 2)) > 25:
             scalar = 2
+        if float(distance) > 10.0:
+            scalar = 3
+        elif float(distance) > 20.0:
+            scalar = 4
     if mode == 'driving':
-        segments = int(float(distance) / .75)
-        scalar = int(float(numpoints) / float(segments))
+        if float(distance) <= 10.0:
+            segments = int(float(distance) / 1.5)
+            scalar = int(float(numpoints) * float(segments))
+        elif float(distance) > 10.0 and float(distance) <= 25.0:
+            segments = int(float(distance) / 3)
+            scalar = int(float(numpoints) * float(segments))
+        elif float(distance) > 25.0 and float(distance) <= 100.0:
+            segments = int(float(distance) / 6)
+            scalar = int(float(numpoints) * float(segments))
+        elif float(distance) > 100.0:
+            segments = int(float(distance) / 12)
+            scalar = int(float(numpoints) * float(segments))
     if mode == 'walking':
         segments = int(float(distance) / .25)
         scalar = int(float(numpoints) / float(segments))

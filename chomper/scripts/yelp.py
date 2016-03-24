@@ -62,7 +62,6 @@ def getCuisines(ogcuisine):
 
     """
     cuisinecodes = {}
-    cuisinecodes['Fast Food'] = ['hotdogs', 'burgers', 'chickenshop']
     cuisinecodes['Burgers'] = ['burgers']
     cuisinecodes['Chicken'] = ['chickenshop']
     cuisinecodes['Fast Food'] = ['hotdogs']
@@ -71,11 +70,9 @@ def getCuisines(ogcuisine):
     cuisinecodes['Diner / Breakfast'] = ['breakfast_brunch', 'diners']
     cuisinecodes['Breakfast'] = ['breakfast_brunch']
     cuisinecodes['Diner'] = ['diners']
-    cuisinecodes['Casual'] = ['salad', 'sandwiches', 'soup']
     cuisinecodes['Salad'] = ['salad']
     cuisinecodes['Sandwiches'] = ['sandwiches']
     cuisinecodes['Soup'] = ['soup']
-    cuisinecodes['Italian / Pizza'] = ['pizza', 'italian']
     cuisinecodes['Pizza'] = ['pizza']
     cuisinecodes['Italian'] = ['italian']
     cuisinecodes['African'] = ['african']
@@ -288,7 +285,7 @@ def calcRestaurantList(addresses, cuisines, distance):
 
     return restlist
 
-def calcRestaurantList2(latlngs, cuisines, distance, radius):
+def calcRestaurantList2(latlngs, cuisines, distance):
     """Calls the Yelp API to search around each intermediate route point the function to process the
     yelp results, and adds all new restaurants to a list.
 
@@ -310,7 +307,7 @@ def calcRestaurantList2(latlngs, cuisines, distance, radius):
     worst = ''
     ratings = []
     for point in latlngs:
-        yelpresults = search2(cuisine,point,distance,radius)['businesses']
+        yelpresults = search2(cuisine,point,distance)['businesses']
         processedyelpresults = processResults(yelpresults)
         for result in processedyelpresults:
             if (result not in used):
@@ -352,7 +349,7 @@ def calcRestaurantList2(latlngs, cuisines, distance, radius):
 
     return restlist
 
-def search(term, location, distance, radius):
+def search(term, location, distance):
     """Query the Search API by a search term and location.
 
     Args:
@@ -365,10 +362,14 @@ def search(term, location, distance, radius):
     """
 
     print location
-
-    scalar = 1
-    if distance > 5:
-        scalar = int(float(distance) / 5.0)
+    if float(distance) < 10.0:
+        radius = 1
+    elif float(distance) > 10.0 and float(distance) <= 25.0:
+        radius = 2.5
+    elif float(distance) > 25.0 and float(distance) <= 100.0:
+        radius = 5
+    elif float(distance) > 100.0:
+        radius = 10
 
     metradius = 1609 * int(radius)
     url_params = {
@@ -379,7 +380,7 @@ def search(term, location, distance, radius):
     }
     return request(API_HOST, SEARCH_PATH, url_params=url_params)
 
-def search2(term, location, distance, radius):
+def search2(term, location, distance):
     """Query the Search API by a search term and location.
 
     Args:
@@ -393,9 +394,14 @@ def search2(term, location, distance, radius):
 
     print location
 
-    scalar = 1
-    if distance > 5:
-        scalar = int(float(distance) / 5.0)
+    if float(distance) < 10.0:
+        radius = 1
+    elif float(distance) > 10.0 and float(distance) <= 25.0:
+        radius = 2.5
+    elif float(distance) > 25.0 and float(distance) <= 100.0:
+        radius = 5
+    elif float(distance) > 100.0:
+        radius = 10
 
     metradius = 1609 * int(radius)
     print metradius

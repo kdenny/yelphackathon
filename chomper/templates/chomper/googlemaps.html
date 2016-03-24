@@ -4,6 +4,22 @@
 	{% load leaflet_tags %}
 	{% load geojson_tags %}
     <style>
+    div#fancybox-wrap{
+        height: 480px;
+    }
+    #fancybox-inner embed, #fancybox-inner object {
+        height: 100% !important;
+        fitToView:false;
+        }
+
+        object, embed {
+        height: 100%;
+        }
+
+        img, object, embed {
+        max-width: 100%;
+        height: auto;
+        }
     body{
         height: 100vh;
         max-width: 100vw;
@@ -53,6 +69,18 @@
     .row {
     margin-right: 0px;
     margin-left: 0px;
+    }
+    #fancybox-inner embed, #fancybox-inner object {
+    height: 100% !important;
+    }
+
+    object, embed {
+    height: 100%;
+    }
+
+    img, object, embed {
+    max-width: 100%;
+    height: auto;
     }
     #sidebar {
       width: 270px;
@@ -334,8 +362,10 @@
                             </select>
                         </div>
                         <br>
+                        <br>
 
                         <div>
+                            <br>
                             <br>
                         </div>
                             <div class="col-xs-1 text-right"></div>
@@ -390,18 +420,8 @@
 
 
 
+
 		<script type="text/javascript">
-        $(document).ready(function() {
-
-            $("a#yelp").fancybox({
-                width: 1000,
-                height: 1050,
-                autoSize : false,
-                fitToView : false,
-                maxWidth : '100%' // I don't think you need this
-            });
-
-        });
 
         $("#submit-btn").click(function() {
             $('#input-form').hide();
@@ -590,6 +610,13 @@
 {#            $(this).parent('div').remove();#}
         });
 
+        map.on('popupopen', function () {
+            $('a.fancybox').fancybox({
+                padding : 0,
+                openEffect  : 'elastic',
+                type: "iframe"
+            });
+        });
 
         }
 

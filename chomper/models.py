@@ -23,7 +23,7 @@ class RestaurantPoint(models.Model):
 
     @property
     def popupContent(self):
-        return '<b>{0} </b><a id="yelp" class="fancybox fancybox.iframe" target="_blank" href={5}>(link)</a><br>Rating: {1}<br>Origin Time: {2} min <a href={6}>(Get Directions)</a><br>Destination Time: {3} min <br>Out of the Way Time: {4} min'.format(
+        return '<b>{0} </b><a href={5} class="fancybox fancybox.iframe" onclick="$.fancybox(this);return false;" >(link)</a><br>Rating: {1}<br>Origin Time: {2} min <a href={6}>(Get Directions)</a><br>Destination Time: {3} min <br>Out of the Way Time: {4} min'.format(
           self.name,
           self.rating,
           self.origdist,
