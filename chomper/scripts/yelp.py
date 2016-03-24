@@ -227,63 +227,6 @@ def getRestaurantAddressDict(restaurants):
 
     return addressdict
 
-def calcRestaurantList(addresses, cuisines, distance):
-    """Calls the Yelp API to search around each intermediate route point the function to process the
-    yelp results, and adds all new restaurants to a list.
-
-    Args:
-        addresses (list): The list of the addresses of all intermediate route points.
-        cuisines (list): The list of all cuisines to search for.
-        distance (int): The distance to search around each intermediate point
-
-    Returns:
-        restlist (list of dicts): The list of all restaurant results, containing dictionaries with the processed yelp results
-
-    """
-    restlist = []
-    used = []
-    print addresses
-    cuisine = str(cuisines[0])
-    if len(cuisines) > 1:
-        cuisine = ",".join(cuisines)
-    minrating = 5.0
-    worst = ''
-    ratings = []
-    for point in addresses:
-        yelpresults = search(cuisine,point,distance)['businesses']
-        processedyelpresults = processResults(yelpresults)
-        for result in processedyelpresults:
-            if (result not in used):
-                if len(restlist) < 40:
-                    restlist.append(processedyelpresults[result])
-                    used.append(result)
-                    ratings.append(float(result['ratings']))
-                    if float(processedyelpresults[result]['rating']) < minrating:
-                        minrating = float(processedyelpresults[result]['rating'])
-                        worst = result
-
-                elif len(restlist) >= 40:
-                    ratings.sort()
-                    if float(processedyelpresults[result]['rating']) > minrating:
-                        if worst in restlist:
-                            restlist.remove(restlist.index(worst))
-                            if len(restlist) < 45:
-                                restlist.append(processedyelpresults[result])
-                        else:
-                            minrating = ratings[0]
-                            for r in restlist:
-                                if r['rating'] == minrating:
-                                    worst = r['name']
-                                    restlist.remove(r)
-                                    minrating = r['rating']
-                            if len(restlist) < 45:
-                                restlist.append(processedyelpresults[result])
-
-    print (len(restlist))
-    pprint.pprint(restlist)
-    print(used)
-
-    return restlist
 
 def calcRestaurantList2(latlngs, cuisines, distance):
     """Calls the Yelp API to search around each intermediate route point the function to process the
@@ -349,36 +292,6 @@ def calcRestaurantList2(latlngs, cuisines, distance):
 
     return restlist
 
-def search(term, location, distance):
-    """Query the Search API by a search term and location.
-
-    Args:
-        term (str): The search term passed to the API.
-        location (str): The search location passed to the API.
-        distance (int): The search distance to query from each route point.
-
-    Returns:
-        dict: The JSON response from the request.
-    """
-
-    print location
-    if float(distance) < 10.0:
-        radius = 1
-    elif float(distance) > 10.0 and float(distance) <= 25.0:
-        radius = 2.5
-    elif float(distance) > 25.0 and float(distance) <= 100.0:
-        radius = 5
-    elif float(distance) > 100.0:
-        radius = 10
-
-    metradius = 1609 * int(radius)
-    url_params = {
-        'category_filter': term.replace(' ', '+'),
-        'radius_filter': metradius,
-        'location': location.replace(' ', '+'),
-        'limit': SEARCH_LIMIT
-    }
-    return request(API_HOST, SEARCH_PATH, url_params=url_params)
 
 def search2(term, location, distance):
     """Query the Search API by a search term and location.
@@ -407,7 +320,7 @@ def search2(term, location, distance):
     print metradius
     url_params = {
         'category_filter': term.replace(' ', '+'),
-        'radius_filter': 1000,
+        'radius_filter': metradius,
         'll': location.replace(' ', '+'),
         'limit': SEARCH_LIMIT
     }

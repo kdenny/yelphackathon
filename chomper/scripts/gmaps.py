@@ -206,14 +206,27 @@ def createLatLngs(origin,destination,mode,distance,intermediatepoints):
     segments = 10
     count = 1
 
+
     if mode == 'transit':
         scalar = 1
         discardpoints = 5
         if (numpoints - (discardpoints * 2)) > 25:
             scalar = 2
+            if float(distance) > 10.0:
+                scalar = 3
     if mode == 'driving':
-        segments = int(float(distance) / .5)
-        scalar = int(float(numpoints) / float(segments))
+        if float(distance) <= 10.0:
+            segments = int(float(distance) / 1.5)
+            scalar = int(float(numpoints) * float(segments))
+        elif float(distance) > 10.0 and float(distance) <= 25.0:
+            segments = int(float(distance) / 3)
+            scalar = int(float(numpoints) * float(segments))
+        elif float(distance) > 25.0 and float(distance) <= 100.0:
+            segments = int(float(distance) / 6)
+            scalar = int(float(numpoints) * float(segments))
+        elif float(distance) > 100.0:
+            segments = int(float(distance) / 12)
+            scalar = int(float(numpoints) * float(segments))
     if mode == 'walking':
         segments = int(float(distance) / .25)
         scalar = int(float(numpoints) / float(segments))

@@ -199,13 +199,9 @@
 	            </thead>
 	            <tbody id="the-tbody">
 					{% for key in data %}
-					<tr id={{ key.rid }}>
+					<tr class="feature-row" id={{ key.rid }}>
 	                    <td>
-{#                            <a target="_blank" href= {{ key.url }}>#}
-{#                            <div style="height:100%;width:100%">#}
-{#                                {{ key.name }}#}
-{#                            </div>#}
-{#                            </a>#}
+
                             <div style="height:100%;width:100%">
                                 <a href= "#" class="highlight" id={{ key.rid }}>
                                 {{ key.name }}
@@ -213,11 +209,7 @@
                             </div>
                         </td>
 	                    <td>{{ key.rating }}</td>
-{#                        <td>{{ key.cuisine.0.0 }}</td>#}
-                        <td>{{ key.outofthewaytime }} min</td>
-{#                        <td>#}
-{#                            <button type="button" class="highlight" id={{ key.rid }}>Highlight {{ key.rid }}</button>#}
-{#                        </td>#}
+                        <td>{{ key.outofthewaytime }}</td>
 	    			</tr>
 	            	{% endfor %}
 	            </tbody>
@@ -368,24 +360,6 @@
                             <br>
                             <br>
                         </div>
-                            <div class="col-xs-1 text-right"></div>
-                            <div class="col-xs-4 text-right">
-                            <label>Search Radius:</label>
-                            </div>
-                        <div class="col-xs-7 text-left">
-							<div class="btn-group" data-toggle="buttons">
-								<label class="btn btn-default">
-									<input type="radio" name="radius" value="1" checked="checked" /> 1 mi.
-								</label>
-								<label class="btn btn-default">
-									<input type="radio" name="radius" value="2" /> 2 mi.
-								</label>
-								<label class="btn btn-default">
-									<input type="radio" name="radius" value="5" /> 5 mi.
-								</label>
-							</div>
-                        </div>
-{#                        <br>#}
                         <div>
                             <div class="col-xs-1 text-right"></div>
                             <div class="col-xs-4 text-right">
@@ -597,18 +571,26 @@
                 });
 
         // Remove a marker
-        $('.highlight').on("click", function () {
-            // Remove the marker
-            console.log($(this).attr('id'));
-            var barker = markerMap[$(this).attr('id')];
-            barker.openPopup(barker.getLatLng());
-            console.log(barker.getLatLng());
+        // $('.highlight').on("click", function () {
+        //     // Remove the marker
+        //     console.log($(this).attr('id'));
+        //     var barker = markerMap[$(this).attr('id')];
+        //     barker.openPopup(barker.getLatLng());
+        //     console.log(barker.getLatLng());
 
-{#            map.removeLayer(markers[$(this).attr('id')]);#}
-{##}
-{#            // Remove the link#}
-{#            $(this).parent('div').remove();#}
+        // });
+
+        $(document).on("click", ".feature-row", function(e) {
+          sidebarClick(parseInt($(this).attr("id"), 10));
+
         });
+
+        function sidebarClick(id) {
+            console.log(id)
+            var barker = markerMap[id];
+            barker.openPopup(barker.getLatLng());
+        }
+
 
         map.on('popupopen', function () {
             $('a.fancybox').fancybox({
@@ -620,19 +602,6 @@
 
         }
 
-
-        $(document).on("click", ".feature-row", function(e) {
-          $(document).off("mouseout", ".feature-row", clearHighlight);
-          sidebarClick(parseInt($(this).attr("id"), 10));
-        });
-
-        if ( !("ontouchstart" in window) ) {
-          $(document).on("mouseover", ".feature-row", function(e) {
-            highlight.clearLayers().addLayer(L.circleMarker([$(this).attr("lat"), $(this).attr("lng")], highlightStyle));
-          });
-        }
-
-        $(document).on("mouseout", ".feature-row", clearHighlight);
 
         $("#nav-btn").click(function() {
           $(".navbar-collapse").collapse("toggle");
@@ -663,33 +632,6 @@
                   map.invalidateSize();
         });
 
-        $("#reload-map-btn").click(function() {
-          map_init();
-        });
-
-
-        function clearHighlight() {
-          highlight.clearLayers();
-        }
-
-        function sidebarClick(id) {
-          var layer = markerClusters.getLayer(id);
-          map.setView([layer.getLatLng().lat, layer.getLatLng().lng], 17);
-          layer.fire("click");
-          /* Hide sidebar and go to the map on small screens */
-          if (document.body.clientWidth <= 767) {
-            $("#sidebar").hide();
-            map.invalidateSize();
-          }
-        }
-
-        var highlight = L.geoJson(null);
-        var highlightStyle = {
-          stroke: false,
-          fillColor: "#00FFFF",
-          fillOpacity: 0.7,
-          radius: 10
-        };
 
 		</script>
 

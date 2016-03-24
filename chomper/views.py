@@ -16,7 +16,7 @@ from django.http import JsonResponse
 from rest_framework import viewsets, mixins
 
 # Scripts
-from scripts.yelp import calcRestaurantList, getRestaurantAddresses, getRestaurantAddressDict, getCuisines, calcRestaurantList2, getQueryType
+from scripts.yelp import getRestaurantAddresses, getRestaurantAddressDict, getCuisines, calcRestaurantList2, getQueryType
 from scripts.gmaps import calcRoutePoints, createAddressList, makeRestaurantPoints, calcRestaurantDistanceMatrix, addDistanceToRestaurants, createLatLngs, geocodr, makeUPoints
 
 # Python
