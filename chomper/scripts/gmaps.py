@@ -20,8 +20,8 @@ import sys
 from chomper.models import *
 
 # Kevin's Key
-gmapper = googlemaps.Client(key='AIzaSyCUSkUaTU4DJhuheYoh3_x2y1BBD40N3yc')
-# gmapper = googlemaps.Client(key='AIzaSyCUyRHrPjwl5F-hMit0-1lyZTyf6rKDMb8')
+# gmapper = googlemaps.Client(key='AIzaSyCUSkUaTU4DJhuheYoh3_x2y1BBD40N3yc')
+gmapper = googlemaps.Client(key='AIzaSyCUyRHrPjwl5F-hMit0-1lyZTyf6rKDMb8')
 
 
 
@@ -234,8 +234,8 @@ def calcRestaurantDistanceMatrix(restaurants,origin,destination,modal,users,addr
     """
     userpoints = [origin, destination]
 
-    # gmappr = googlemaps.Client(key='AIzaSyB17F8Q89ZuNlPN3fAXinQUDK83Bufmmto')
-    gmappr = googlemaps.Client(key='AIzaSyCUyRHrPjwl5F-hMit0-1lyZTyf6rKDMb8')
+    gmappr = googlemaps.Client(key='AIzaSyB17F8Q89ZuNlPN3fAXinQUDK83Bufmmto')
+    # gmappr = googlemaps.Client(key='AIzaSyCUyRHrPjwl5F-hMit0-1lyZTyf6rKDMb8')
     numrest = len(restaurants)
     placed = 0
     n = 0
@@ -319,19 +319,23 @@ def addDistanceToRestaurants(restaurants, distancematrix, addressdict, initdista
 
     """
     newrests = []
+    count = 1
     for rest in restaurants:
         if rest['name'] in distancematrix:
             rest['origintime'] = distancematrix[rest['name']]['origin']
             rest['destinationtime'] = distancematrix[rest['name']]['destination']
             rest['outofthewaytime'] = int(rest['origintime']) + int(rest['destinationtime']) - initdistance
+            rest['rid'] = count
             newrests.append(rest)
         else:
+            rest['rid'] = count
             addressstring = str(rest['address']) + ' ' + str(rest['city'])
             otherrest = addressdict[addressstring]
             rest['origintime'] = distancematrix[otherrest]['origin']
             rest['destinationtime'] = distancematrix[otherrest]['destination']
             rest['outofthewaytime'] = int(rest['origintime']) + int(rest['destinationtime']) - initdistance
             newrests.append(rest)
+        count += 1
 
     return newrests
 
@@ -399,6 +403,7 @@ def makeRestaurantPoints(restaurants):
         rp.geom = {'type': 'Point', 'coordinates': [rest['coords'][1], rest['coords'][0]]}
         rp.name = rest['name'].encode('ascii', 'ignore')
         rp.rating = rest['rating'].encode('ascii', 'ignore')
+        rp.rid = rest['rid']
         if float(rest['rating']) >= 4:
             rp.Color = 'green'
         elif float(rest['rating']) < 4 and float(rest['rating']) >= 3.0:
