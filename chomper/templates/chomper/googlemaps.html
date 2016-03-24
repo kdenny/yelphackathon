@@ -159,28 +159,37 @@
 {#              </div>#}
 {#            </div>#}
             <div class="sidebar-table">
-	            <table data-toggle="table" id="features" class="table table-bordered table-hover table-striped tablesorter sortable" style="cursor: pointer;">
+	            <table data-toggle="table" id="features" class="table table-bordered table-hover table-striped tablesorter" style="cursor: pointer;">
 	                <thead>
 	                <tr>
 	                <th class="header"> Name <i class="icon-sort"></i></th>
 					<th class="header" data-sortable="true"> Rating <i class="icon-sort"></i></th>
 {#                    <th class="header"> Cuisine <i class="icon-sort"></i></th>#}
-                    <th class="header" data-sortable="true"> + Time <i class="icon-sort"></i></th>
+                    <th class="header" data-sortable="true"> Extra Time <i class="icon-sort"></i></th>
+{#                    <th class="header"> Linkr </th>#}
 	                </tr>
 	            </thead>
 	            <tbody id="the-tbody">
 					{% for key in data %}
-					<tr>
+					<tr id={{ key.rid }}>
 	                    <td>
-                            <a target="_blank" href= {{ key.url }}>
+{#                            <a target="_blank" href= {{ key.url }}>#}
+{#                            <div style="height:100%;width:100%">#}
+{#                                {{ key.name }}#}
+{#                            </div>#}
+{#                            </a>#}
                             <div style="height:100%;width:100%">
+                                <a href= "#" class="highlight" id={{ key.rid }}>
                                 {{ key.name }}
+                                </a>
                             </div>
-                            </a>
                         </td>
 	                    <td>{{ key.rating }}</td>
 {#                        <td>{{ key.cuisine.0.0 }}</td>#}
-                        <td>{{ key.outofthewaytime }}</td>
+                        <td>{{ key.outofthewaytime }} min</td>
+{#                        <td>#}
+{#                            <button type="button" class="highlight" id={{ key.rid }}>Highlight {{ key.rid }}</button>#}
+{#                        </td>#}
 	    			</tr>
 	            	{% endfor %}
 	            </tbody>
@@ -382,6 +391,17 @@
 
 
 		<script type="text/javascript">
+        $(document).ready(function() {
+
+            $("a#yelp").fancybox({
+                width: 1000,
+                height: 1050,
+                autoSize : false,
+                fitToView : false,
+                maxWidth : '100%' // I don't think you need this
+            });
+
+        });
 
         $("#submit-btn").click(function() {
             $('#input-form').hide();
@@ -476,7 +496,7 @@
                                 shadowSize: [41, 41]
                             })
                         });
-                        markerMap[feature.properties.name] = marker;
+                        markerMap[feature.properties.rid] = marker;
                         return marker;
                     },
                     onEachFeature: onEachFeature
@@ -557,12 +577,17 @@
                 });
 
         // Remove a marker
-        $('.remove').on("click", function () {
+        $('.highlight').on("click", function () {
             // Remove the marker
-            map.removeLayer(markers[$(this).attr('id')]);
+            console.log($(this).attr('id'));
+            var barker = markerMap[$(this).attr('id')];
+            barker.openPopup(barker.getLatLng());
+            console.log(barker.getLatLng());
 
-            // Remove the link
-            $(this).parent('div').remove();
+{#            map.removeLayer(markers[$(this).attr('id')]);#}
+{##}
+{#            // Remove the link#}
+{#            $(this).parent('div').remove();#}
         });
 
 

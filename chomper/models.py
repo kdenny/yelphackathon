@@ -9,6 +9,7 @@ from djgeojson.serializers import Serializer as GeoJSONSerializer
 class RestaurantPoint(models.Model):
     geom = PointField()
     name = models.TextField(max_length=200)
+    rid = models.CharField(max_length=10)
     rating = models.FloatField(max_length=5)
     origdist = models.CharField(max_length=10)
     origdirlink = models.TextField(max_length=200)
@@ -22,7 +23,7 @@ class RestaurantPoint(models.Model):
 
     @property
     def popupContent(self):
-        return '<b>{0} </b><a target="_blank" href={5}>(link)</a><br>Rating: {1}<br>Origin Time: {2} min <a target="_blank" href={6}>(directions)</a><br>Destination Time: {3} min <br>Out of the Way Time: {4}'.format(
+        return '<b>{0} </b><a id="yelp" class="fancybox fancybox.iframe" target="_blank" href={5}>(link)</a><br>Rating: {1}<br>Origin Time: {2} min <a href={6}>(Get Directions)</a><br>Destination Time: {3} min <br>Out of the Way Time: {4} min'.format(
           self.name,
           self.rating,
           self.origdist,
