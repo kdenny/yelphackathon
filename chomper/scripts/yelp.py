@@ -306,15 +306,16 @@ def search2(term, location, distance):
     """
 
     print location
-
-    if float(distance) < 10.0:
-        radius = 1
+    if float(distance) <= 5.0:
+        radius = 0.5
+    elif float(distance) > 5.0 and float(distance) <= 10.0:
+        radius = 1.5
     elif float(distance) > 10.0 and float(distance) <= 25.0:
-        radius = 2.5
+        radius = 4
     elif float(distance) > 25.0 and float(distance) <= 100.0:
-        radius = 5
+        radius = 8
     elif float(distance) > 100.0:
-        radius = 10
+        radius = 15
 
     metradius = 1609 * int(radius)
     print metradius

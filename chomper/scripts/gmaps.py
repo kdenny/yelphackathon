@@ -121,62 +121,62 @@ def calcRoutePoints(ori,desi,modal):
 
     return results
 
-def createAddressList(origin,destination,mode,distance,intermediatepoints):
-    """Uses the Google Reverse Geocoding API to create a list of addresses of intermediate points to be used to query the Yelp API
+# def createAddressList(origin,destination,mode,distance,intermediatepoints):
+#     """Uses the Google Reverse Geocoding API to create a list of addresses of intermediate points to be used to query the Yelp API
 
-    Args:
-        origin (str): The origin address
-        desination (str): The destination address
-        mode (str): The travel mode between the two points
-        distance (str): The travel distance between the two points
-        intermediatepoints (list) : The lat / long coordinates of all intermediate points
+#     Args:
+#         origin (str): The origin address
+#         desination (str): The destination address
+#         mode (str): The travel mode between the two points
+#         distance (str): The travel distance between the two points
+#         intermediatepoints (list) : The lat / long coordinates of all intermediate points
 
-    Returns:
-        addresslist (dict): The list of addresses to be used in querying the Yelp API
+#     Returns:
+#         addresslist (dict): The list of addresses to be used in querying the Yelp API
 
-    """
-    addresslist = [origin, destination]
-    numpoints = len(intermediatepoints)
-    scalar = 10
-    discardpoints = 3
-    segments = 10
-    count = 1
+#     """
+#     addresslist = [origin, destination]
+#     numpoints = len(intermediatepoints)
+#     scalar = 10
+#     discardpoints = 3
+#     segments = 10
+#     count = 1
 
-    if mode == 'transit':
-        scalar = 1
-        discardpoints = 5
-        if (numpoints - (discardpoints * 2)) > 25:
-            scalar = 2
-        if float(distance) > 10.0:
-            scalar = 3
-        elif float(distance) > 20.0:
-            scalar = 4
-    if mode == 'driving':
-        if float(distance) <= 10.0:
-            segments = int(float(distance) / 1.5)
-            scalar = int(float(numpoints) * float(segments))
-        elif float(distance) > 10.0 and float(distance) <= 25.0:
-            segments = int(float(distance) / 3)
-            scalar = int(float(numpoints) * float(segments))
-        elif float(distance) > 25.0 and float(distance) <= 100.0:
-            segments = int(float(distance) / 6)
-            scalar = int(float(numpoints) * float(segments))
-        elif float(distance) > 100.0:
-            segments = int(float(distance) / 12)
-            scalar = int(float(numpoints) * float(segments))
-    if mode == 'walking':
-        segments = int(float(distance) / .25)
-        scalar = int(float(numpoints) / float(segments))
+#     if mode == 'transit':
+#         scalar = 1
+#         discardpoints = 5
+#         if (numpoints - (discardpoints * 2)) > 25:
+#             scalar = 2
+#         if float(distance) > 10.0:
+#             scalar = 3
+#         elif float(distance) > 20.0:
+#             scalar = 4
+#     if mode == 'driving':
+#         if float(distance) <= 10.0:
+#             segments = int(float(distance) / 1.5)
+#             scalar = int(float(numpoints) / float(segments))
+#         elif float(distance) > 10.0 and float(distance) <= 25.0:
+#             segments = int(float(distance) / 3)
+#             scalar = int(float(numpoints) / float(segments))
+#         elif float(distance) > 25.0 and float(distance) <= 100.0:
+#             segments = int(float(distance) / 6)
+#             scalar = int(float(numpoints) / float(segments))
+#         elif float(distance) > 100.0:
+#             segments = int(float(distance) / 12)
+#             scalar = int(float(numpoints) / float(segments))
+#     if mode == 'walking':
+#         segments = int(float(distance) / .25)
+#         scalar = int(float(numpoints) / float(segments))
 
-    for point in intermediatepoints:
-        if count > discardpoints and (count % scalar == 1 or scalar == 1) and count < (numpoints - discardpoints) and ((count > 1) and (intermediatepoints[count] != intermediatepoints[count-1])):
-            pointaddress = gmapper.reverse_geocode((point[0], point[1]))[0]['formatted_address'].encode('ascii', 'ignore')
-            # pointaddress = pointaddress.strip(codecs.BOM_UTF8), 'utf-8'
-            if pointaddress not in addresslist:
-                addresslist.append(pointaddress)
-        count += 1
+#     for point in intermediatepoints:
+#         if count > discardpoints and (count % scalar == 1 or scalar == 1) and count < (numpoints - discardpoints) and ((count > 1) and (intermediatepoints[count] != intermediatepoints[count-1])):
+#             pointaddress = gmapper.reverse_geocode((point[0], point[1]))[0]['formatted_address'].encode('ascii', 'ignore')
+#             # pointaddress = pointaddress.strip(codecs.BOM_UTF8), 'utf-8'
+#             if pointaddress not in addresslist:
+#                 addresslist.append(pointaddress)
+#         count += 1
 
-    return addresslist
+#     return addresslist
 
 def createLatLngs(origin,destination,mode,distance,intermediatepoints):
     """Processes Latitude and Longitude values into a readable format for the Yelp API
@@ -206,7 +206,6 @@ def createLatLngs(origin,destination,mode,distance,intermediatepoints):
     segments = 10
     count = 1
 
-
     if mode == 'transit':
         scalar = 1
         discardpoints = 5
@@ -217,16 +216,16 @@ def createLatLngs(origin,destination,mode,distance,intermediatepoints):
     if mode == 'driving':
         if float(distance) <= 10.0:
             segments = int(float(distance) / 1.5)
-            scalar = int(float(numpoints) * float(segments))
+            scalar = int(float(numpoints) / float(segments))
         elif float(distance) > 10.0 and float(distance) <= 25.0:
             segments = int(float(distance) / 3)
-            scalar = int(float(numpoints) * float(segments))
+            scalar = int(float(numpoints) / float(segments))
         elif float(distance) > 25.0 and float(distance) <= 100.0:
             segments = int(float(distance) / 6)
-            scalar = int(float(numpoints) * float(segments))
+            scalar = int(float(numpoints) / float(segments))
         elif float(distance) > 100.0:
             segments = int(float(distance) / 12)
-            scalar = int(float(numpoints) * float(segments))
+            scalar = int(float(numpoints) / float(segments))
     if mode == 'walking':
         segments = int(float(distance) / .25)
         scalar = int(float(numpoints) / float(segments))

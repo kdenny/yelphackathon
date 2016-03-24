@@ -17,7 +17,7 @@ from rest_framework import viewsets, mixins
 
 # Scripts
 from scripts.yelp import getRestaurantAddresses, getRestaurantAddressDict, getCuisines, calcRestaurantList2, getQueryType
-from scripts.gmaps import calcRoutePoints, createAddressList, makeRestaurantPoints, calcRestaurantDistanceMatrix, addDistanceToRestaurants, createLatLngs, geocodr, makeUPoints
+from scripts.gmaps import calcRoutePoints, makeRestaurantPoints, calcRestaurantDistanceMatrix, addDistanceToRestaurants, createLatLngs, geocodr, makeUPoints
 
 # Python
 import oauth2 as oauth
