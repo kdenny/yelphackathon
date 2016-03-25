@@ -342,11 +342,11 @@
                                 <label>Find: </label>
                             </div>
                             <div class="col-xs-7 text-left">
-                              <input type="radio" name="symbolS" value="Best" checked="checked">Best along route</input>
+                              <input type="radio" name="symbolS" value="Best" checked="checked"><strong>  Best restaurants along route</strong></input>
                               <br>
-                                <input type="radio" name="symbolS" value="Route">Closest to route</input>
+                                <input type="radio" name="symbolS" value="Route"><strong>  Restaurants closest to route</strong></input>
                               <br>
-                              <input type="radio" name="symbolS" value="Central">Most centrally located</input>
+                              <input type="radio" name="symbolS" value="Central"><strong>  Centrally located restaurants</strong></input>
                             </div>
                         </div>
 
@@ -674,6 +674,7 @@
         function sidebarClick(id) {
             console.log(id);
             var barker = markerMap[id];
+            console.log(barker)
             barker.openPopup(barker.getLatLng());
         }
 

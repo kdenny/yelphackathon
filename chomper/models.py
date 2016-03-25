@@ -24,9 +24,9 @@ class RestaurantPoint(models.Model):
 
     @property
     def popupContent(self):
-        return '<b>{0} </b><a href= {5}>(View on Yelp)</a><br>' \
+        return '<b>{0} </b><a href= {5} target="_blank">(View on Yelp)</a><br>' \
                'Rating: <b>{1}</b><br>' \
-               'Origin Time: <b>{2} min</b><a href={6}>(Get Directions)</a><br>' \
+               'Origin Time: <b>{2} min</b><a href={6} target="_blank">(Get Directions)</a><br>' \
                'Destination Time: <b>{3} min</b> <br>' \
                'Out of the Way Time: <b>{4} min</b>'\
             .format(
