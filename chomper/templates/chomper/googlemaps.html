@@ -4,22 +4,6 @@
 	{% load leaflet_tags %}
 	{% load geojson_tags %}
     <style>
-    div#fancybox-wrap{
-        height: 480px;
-    }
-    #fancybox-inner embed, #fancybox-inner object {
-        height: 100% !important;
-        fitToView:false;
-        }
-
-        object, embed {
-        height: 100%;
-        }
-
-        img, object, embed {
-        max-width: 100%;
-        height: auto;
-        }
     body{
         height: 100vh;
         max-width: 100vw;
@@ -69,18 +53,6 @@
     .row {
     margin-right: 0px;
     margin-left: 0px;
-    }
-    #fancybox-inner embed, #fancybox-inner object {
-    height: 100% !important;
-    }
-
-    object, embed {
-    height: 100%;
-    }
-
-    img, object, embed {
-    max-width: 100%;
-    height: auto;
     }
     #sidebar {
       width: 270px;
@@ -245,7 +217,7 @@
                                  <button type="button" class="btn btn-xs btn-default pull-left" id="curloc-btn" data-toggle="tooltip" title="Use Current Location"><span class="glyphicon glyphicon-pushpin"></span></button>
                             </div>
                             <div class="col-xs-11 text-center">
-                                <input type="text" name="destination" class="form-control" placeholder="Enter a destination" value="" required autofocus>
+                                <input type="text" name="destination" class="form-control" id="destination-loc" placeholder="Enter a destination" value="" required autofocus>
                             </div>
                             <div class="col-xs-12 text-center">
                                 <div class="btn-group text-center" data-toggle="buttons">
@@ -276,9 +248,9 @@
 					<div class="panel panel-default">
                     <div class="panel-body">
                         <div class="col-sm-12 col-md-12 text-center">
-                            <select name="cuisine" style="width: 100%">
-                                <option selected="selected" disabled>Select a cuisine</option>
-                                <option data-divider="true">----Quick / Casual Bites----</option>
+                            <select name="cuisine" id="cuisine-select" style="width: 100%" required>
+                                <option selected="selected" disabled value="">Select a cuisine</option>
+                                <option data-divider="true" disabled>----Quick / Casual Bites----</option>
                                 <option value="Bagels">Bagels</option>
                                 <option value="BBQ">BBQ</option>
                                 <option value="Breakfast">Breakfast / Brunch</option>
@@ -291,7 +263,7 @@
                                 <option value="Sandwiches">Sandwiches</option>
                                 <option value="Soup">Soup</option>
 
-                                <option data-divider="true">---Sweets----</option>
+                                <option data-divider="true" disabled>---Sweets----</option>
                                 <option value="Bakeries">Bakeries</option>
                                 <option value="Cupcakes">Cupcakes</option>
                                 <option value="Desserts">Desserts</option>
@@ -299,7 +271,7 @@
                                 <option value="Gelato">Gelato</option>
                                 <option value="Ice Cream / FroYo">Ice Cream / FroYo</option>
 
-                                <option data-divider="true">----Bars / Alcohol----</option>
+                                <option data-divider="true" disabled>----Bars / Alcohol----</option>
                                 <option value="Beer / Wine Stores">Beer / Wine Stores</option>
                                 <option value="Beer Bars">Beer Bars</option>
                                 <option value="Beer Gardens">Beer Gardens</option>
@@ -312,7 +284,7 @@
                                 <option value="Wineries">Wineries</option>
                                 <option value="Wine Bars">Wine Bars</option>
 
-                                <option data-divider="true">---Continental----</option>
+                                <option data-divider="true" disabled>---Continental----</option>
                                 <option value="American">American</option>
                                 <option value="Diner">Diner</option>
                                 <option value="Seafood">Seafood</option>
@@ -320,7 +292,7 @@
                                 <option value="Steakhouse">Steakhouse</option>
                                 <option value="Vegetarian">Vegetarian</option>
 
-                                <option data-divider="true">----Central / South America----</option>
+                                <option data-divider="true" disabled>----Central / South America----</option>
                                 <option value="Brazilian">Brazilian</option>
                                 <option value="Caribbean">Caribbean</option>
                                 <option value="Cuban">Cuban</option>
@@ -328,7 +300,7 @@
                                 <option value="Latin">Latin</option>
                                 <option value="Mexican">Mexican</option>
 
-                                <option data-divider="true">----Asia-----</option>
+                                <option data-divider="true" disabled>----Asia-----</option>
                                 <option value="Chinese">Chinese</option>
                                 <option value="Indian">Indian</option>
                                 <option value="Japanese">Japanese</option>
@@ -336,13 +308,13 @@
                                 <option value="Thai">Thai</option>
                                 <option value="Vietnamese">Vietnamese</option>
 
-                                <option data-divider="true">----Africa / Middle East----</option>
+                                <option data-divider="true" disabled>----Africa / Middle East----</option>
                                 <option value="African">African</option>
                                 <option value="Ethiopian">Ethiopian</option>
                                 <option value="Kosher">Kosher</option>
                                 <option value="Middle Eastern">Middle Eastern</option>
 
-                                <option data-divider="true">----Europe----</option>
+                                <option data-divider="true" disabled>----Europe----</option>
                                 <option value="Belgian">Belgian</option>
                                 <option value="British">British</option>
                                 <option value="French">French</option>
@@ -392,10 +364,47 @@
         </div>
 
 
-
+        <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog">
+        	<div class="modal-header">
+        		<button type="button" class="close" data-dismiss="modal">×</button>
+        			<h3>Dialog</h3>
+        	</div>
+        	<div class="modal-body">
+              <iframe src="" style="zoom:0.60" width="99.6%" height="250" frameborder="0"></iframe>
+        	</div>
+        	<div class="modal-footer">
+        		<button class="btn" data-dismiss="modal">OK</button>
+        	</div>
+        </div>
 
 
 		<script type="text/javascript">
+
+		var frameSrc = "www.yelp.com";
+
+        $('#openBtn').click(function(){
+            $('#myModal').on('show', function () {
+
+                $('iframe').attr("src",frameSrc);
+
+        	});
+            $('#myModal').modal({show:true})
+        });
+
+        $('#origin-loc, #destination-loc, #cuisine-select').bind('keyup', function() {
+            if(allFilled()) $('#submit-btn').removeAttr('disabled');
+        });
+
+        function allFilled() {
+            var filled = true;
+            $('input-form input').each(function() {
+                if($(this).val() == '') filled = false;
+            });
+            $('input-form select').each(function() {
+                if($(this).val() == '') filled = false;
+            });
+            return filled;
+        }
 
         $("#submit-btn").click(function() {
             $('#input-form').hide();
@@ -586,18 +595,14 @@
         });
 
         function sidebarClick(id) {
-            console.log(id)
+            console.log(id);
             var barker = markerMap[id];
             barker.openPopup(barker.getLatLng());
         }
 
 
         map.on('popupopen', function () {
-            $('a.fancybox').fancybox({
-                padding : 0,
-                openEffect  : 'elastic',
-                type: "iframe"
-            });
+            console.log("yo");
         });
 
         }

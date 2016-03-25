@@ -307,7 +307,7 @@ def search2(term, location, distance):
 
     print location
     if float(distance) <= 5.0:
-        radius = 0.5
+        radius = 0.75
     elif float(distance) > 5.0 and float(distance) <= 10.0:
         radius = 1.5
     elif float(distance) > 10.0 and float(distance) <= 25.0:
@@ -317,7 +317,7 @@ def search2(term, location, distance):
     elif float(distance) > 100.0:
         radius = 15
 
-    metradius = 1609 * int(radius)
+    metradius = int(float(1609) * float(radius))
     print metradius
     url_params = {
         'category_filter': term.replace(' ', '+'),
