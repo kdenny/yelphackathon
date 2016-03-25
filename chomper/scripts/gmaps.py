@@ -214,7 +214,10 @@ def createLatLngs(origin,destination,mode,distance,intermediatepoints):
             if float(distance) > 10.0:
                 scalar = 3
     if mode == 'driving':
-        if float(distance) <= 10.0:
+        if float(distance) <= 3.0:
+            segments = int(float(distance) / .25)
+            scalar = int(float(numpoints) / float(segments))
+        elif float(distance) > 3.0 and float(distance) <= 10.0:
             segments = int(float(distance) / 1.5)
             scalar = int(float(numpoints) / float(segments))
         elif float(distance) > 10.0 and float(distance) <= 25.0:
@@ -352,6 +355,8 @@ def addDistanceToRestaurants(restaurants, distancematrix, addressdict, initdista
             rest['destinationtime'] = distancematrix[rest['name']]['destination']
             rest['outofthewaytime'] = int(rest['origintime']) + int(rest['destinationtime']) - initdistance
             rest['rid'] = count
+            if rest['outofthewaytime'] < 0:
+                rest['outofthewaytime'] = 0
             newrests.append(rest)
         else:
             rest['rid'] = count
@@ -436,6 +441,14 @@ def makeRestaurantPoints(restaurants):
             rp.Color = 'orange'
         else:
             rp.Color = 'red'
+
+        if rest['outofthewaytime'] <= 5:
+            rp.RouteColor = 'green'
+        elif rest['outofthewaytime'] > 5 and rest['outofthewaytime'] <= 15:
+            rp.RouteColor = 'orange'
+        else:
+            rp.RouteColor = 'red'
+
         # < .25 or > .75
         if ((float(rest['origintime']) > (float(rest['destinationtime']) * 4))) or ((float(rest['destinationtime']) > (float(rest['origintime']) * 4))):
             rp.CentColor = 'gray'
@@ -446,6 +459,7 @@ def makeRestaurantPoints(restaurants):
             rp.CentColor = 'blue'
         elif ((float(rest['destinationtime']) > (float(rest['origintime']) * 1.4))):
             rp.CentColor = 'red'
+
         rp.isclosed = rest['closed']
         rp.origdist = rest['origintime']
         addy = rest['address'] + rest['city']

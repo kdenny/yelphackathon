@@ -55,7 +55,7 @@
     margin-left: 0px;
     }
     #sidebar {
-      width: 270px;
+      width: 25vw;
       height: 77vh;
       max-width: 100%;
       overflow: auto;
@@ -125,12 +125,15 @@
             <div class="col-sm-12 col-md-12 text-center">
             <div class="panel panel-default">
 					<div class="panel-body">
-                        <div class="col-sm-2 col-md-2 text-left" style="font-size:12px">
+                        <div class="col-sm-3 col-md-3 text-left" style="font-size:12px">
+                            <a href="/chomper/googlemaps/">
+                              <button type="button" class="btn btn-xs btn-default" id="search-again-btn"><span class="glyphicon glyphicon-arrow-left"></span>Search Again</button>
+                            </a>
                         </div>
                         <div class="col-sm-8 col-md-8 text-center" style="font-size:14px">
-                                You are viewing <strong>{{ datum.numrest }} </strong> {{ datum.establishment }} between {{ datum.origin }} and {{ datum.destination }} .
+                                You are viewing <strong>{{ datum.numrest }}</strong> {{ datum.establishment }} between <strong>{{ datum.origin }}}</strong> and <strong>{{ datum.destination }}}.</strong>
                             <br>
-                                Traveling via {{ datum.mode }} , you are about {{ datum.duration }} away from this point.
+                                Traveling via <strong>{{ datum.mode }}</strong>, you are about <strong>{{ datum.duration }}</strong> away from this point.
                             <a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="topbar-toggle-off" style="font-size:11px"><span class="glyphicon glyphicon-triangle-top"></span>(Hide Details)</a>
                             <br>
                         </div>
@@ -320,6 +323,7 @@
                                 <option value="French">French</option>
                                 <option value="Greek">Greek</option>
                                 <option value="Irish">Irish</option>
+                                <option value="Italian">Italian</option>
                                 <option value="Mediterranean">Mediterranean</option>
                                 <option value="Spanish / Tapas">Spanish / Tapas</option>
 
@@ -339,6 +343,8 @@
                             </div>
                             <div class="col-xs-7 text-left">
                               <input type="radio" name="symbolS" value="Best" checked="checked">Best along route</input>
+                              <br>
+                                <input type="radio" name="symbolS" value="Route">Closest to route</input>
                               <br>
                               <input type="radio" name="symbolS" value="Central">Most centrally located</input>
                             </div>
@@ -364,31 +370,49 @@
         </div>
 
 
-        <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog">
-        	<div class="modal-header">
-        		<button type="button" class="close" data-dismiss="modal">×</button>
-        			<h3>Dialog</h3>
-        	</div>
-        	<div class="modal-body">
-              <iframe src="" style="zoom:0.60" width="99.6%" height="250" frameborder="0"></iframe>
-        	</div>
-        	<div class="modal-footer">
-        		<button class="btn" data-dismiss="modal">OK</button>
-        	</div>
-        </div>
+{#    <div class="container">#}
+{#        <div class="modal fade" id="myModal" role="dialog">#}
+{#            <div class="modal-dialog">#}
+{##}
+{#              <!-- Modal content-->#}
+{#              <div class="modal-content">#}
+{#                <div class="modal-header">#}
+{#                  <button type="button" class="close" data-dismiss="modal">&times;</button>#}
+{#                  <h4 class="modal-title">Modal Header</h4>#}
+{#                </div>#}
+{#                <div class="modal-body">#}
+{#                  <p>Some text in the modal.</p>#}
+{#                </div>#}
+{#                <div class="modal-footer">#}
+{#                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>#}
+{#                </div>#}
+{#              </div>#}
+{##}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
 
 
 		<script type="text/javascript">
 
-		var frameSrc = "www.yelp.com";
+        function showModal(id) {
+            $("#myModal").modal();
+{#            $('#myModal').on('show', function () {#}
+{##}
+{#                $('iframe').attr("src",id);#}
+{#                #}
+{#        	});#}
+{#            $('#myModal').modal({show:true})#}
+        }
+
+        $(document).on("click", ".modal-link", function(e) {
+          showModal(parseInt($(this).attr("id"), 10));
+
+        });
+
 
         $('#openBtn').click(function(){
-            $('#myModal').on('show', function () {
 
-                $('iframe').attr("src",frameSrc);
-
-        	});
-            $('#myModal').modal({show:true})
         });
 
         $('#origin-loc, #destination-loc, #cuisine-select').bind('keyup', function() {
@@ -519,16 +543,32 @@
                     },
                     onEachFeature: onEachFeature
                 });
+                offroutelayer = L.geoJson(data, {
+                    pointToLayer: function (feature, latlng) {
+                        return L.marker(latlng, {
+                            icon: L.icon({
+                                iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-' + feature.properties.RouteColor + '.png',
+                                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/images/marker-shadow.png',
+                                iconSize: [25, 41],
+                                iconAnchor: [12, 41],
+                                popupAnchor: [1, -34],
+                                shadowSize: [41, 41]
+                            })
+                        });
+                    },
+                    onEachFeature: onEachFeature
+                });
 
 
 
                 var bestLegend = L.control({position: 'bottomright'});
+                var offRouteLegend = L.control({position: 'bottomright'});
                 var centralLegend = L.control({position: 'bottomright'});
 
                 bestLegend.onAdd = function (map) {
                     var legend = L.DomUtil.create('div', 'map-legend', L.DomUtil.get('map'));
 
-                                legend.innerHTML = '<h4>Restaurant Points</h4>';
+                                legend.innerHTML = '<h4>Restaurants by Yelp Rating</h4>';
                                 legend.innerHTML += "<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png' width='12' height='14'>    Rating > 4.0<br />"
                                 legend.innerHTML += "<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png' width='12' height='14'>   Rating 3.0 - 4.0<br />"
                                 legend.innerHTML += "<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png' width='12' height='14'>  Rating < 3.0<br />"
@@ -547,32 +587,69 @@
                     return legend;
                 };
 
+                offRouteLegend.onAdd = function (map) {
+                    var legend = L.DomUtil.create('div', 'map-legend', L.DomUtil.get('map'));
+
+                    legend.innerHTML = '<h4>Time off Route</h4>';
+                    legend.innerHTML += "<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png' width='12' height='14'>     < 5 min<br />"
+                    legend.innerHTML += "<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png' width='12' height='14'>   5-15 min<br />"
+                    legend.innerHTML += "<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png' width='12' height='14'>  15+ min<br />"
+
+                    return legend;
+                };
+
                 if (symbology == 'Central') {
                     centrallayer.addTo(map);
                     centralLegend.addTo(map);
                     }
-                else {
+
+                else if (symbology == 'Best') {
                     bestlayer.addTo(map);
                     bestLegend.addTo(map);
+                }
+
+                else if (symbology == 'Route') {
+                    offroutelayer.addTo(map);
+                    offRouteLegend.addTo(map);
                 }
 
 
                 var baseMaps = {};
                 var overlayMaps = {
                     "Symbol by Central Location": centrallayer,
-                    "Symbol by Yelp Rating": bestlayer
+                    "Symbol by Yelp Rating": bestlayer,
+                    "Symbol by Time Off Route": offroutelayer
                 };
 
                 L.control.layers(overlayMaps, baseMaps,{collapsed:false}).addTo(map);
 
                 map.on('baselayerchange', function (eventLayer) {
                     // Switch to the Population legend...
-                    if (eventLayer.name === 'Symbol by Central Location') {
-                        map.removeControl(bestLegend);
-                        centralLegend.addTo(map);
-                    } else { // Or switch to the Population Change legend...
+                    if (symbology == 'Central') {
                         map.removeControl(centralLegend);
+                    }
+                    else if (symbology == 'Best') {
+                        map.removeControl(bestLegend);
+                    }
+                    else if (symbology == 'Route') {
+                        map.removeControl(offRouteLegend);
+                    }
+                    if (eventLayer.name === 'Symbol by Central Location') {
+{#                        map.removeControl(bestLegend);#}
+{#                        map.removeControl(offRouteLegend);#}
+                        symbology = 'Central'
+                        centralLegend.addTo(map);
+                    }
+                    else if (eventLayer.name === 'Symbol by Yelp Rating') { // Or switch to the Population Change legend...
+{#                        map.removeControl(offRouteLegend);#}
+                        symbology = 'Best'
                         bestLegend.addTo(map);
+                    }
+                    else if (eventLayer.name === 'Symbol by Time Off Route') { // Or switch to the Population Change legend...
+{#                        map.removeControl(bestLegend);#}
+{#                        map.removeControl(centralLegend);#}
+                        symbology = 'Route'
+                        offRouteLegend.addTo(map);
                     }
                 });
 
@@ -599,6 +676,7 @@
             var barker = markerMap[id];
             barker.openPopup(barker.getLatLng());
         }
+
 
 
         map.on('popupopen', function () {

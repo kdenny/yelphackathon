@@ -18,12 +18,18 @@ class RestaurantPoint(models.Model):
     link = models.TextField(max_length=200)
     Color = models.TextField(max_length=200)
     CentColor = models.TextField(max_length=200)
+    RouteColor = models.TextField(max_length=200)
     isclosed = models.BooleanField(default=False)
     address = models.TextField(max_length=200)
 
     @property
     def popupContent(self):
-        return '<b>{0} </b><a href="#" id="openBtn" class="btn" name={5}>(link)</a><br>Rating: {1}<br>Origin Time: {2} min <a href={6}>(Get Directions)</a><br>Destination Time: {3} min <br>Out of the Way Time: {4} min'.format(
+        return '<b>{0} </b><a href= {5}>(View on Yelp)</a><br>' \
+               'Rating: <b>{1}</b><br>' \
+               'Origin Time: <b>{2} min</b><a href={6}>(Get Directions)</a><br>' \
+               'Destination Time: <b>{3} min</b> <br>' \
+               'Out of the Way Time: <b>{4} min</b>'\
+            .format(
           self.name,
           self.rating,
           self.origdist,
