@@ -45,7 +45,6 @@ def index(request):
     data['friend'] = friend
 
 
-    context = {'hello': 'world'}
     return render_to_response('chomper/index.html', {'data': data, }, context_instance=RequestContext(request))
     # return render(request, 'chomper/index.html', context)
 
@@ -105,7 +104,7 @@ def googlemaps(request):
         datum['establishment'] = establishment
         print(datum)
 
-    return render(request, 'chomper/googlemaps.html', { 'data': restaurants, 'datum': datum})
+    return render(request, 'chomper/googlemaps.html', {'data': restaurants, 'datum': datum})
 
 
 

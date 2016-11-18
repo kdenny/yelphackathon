@@ -62,6 +62,7 @@ def calcRoutePoints(ori,desi,modal):
     polyline = []
 
     directions_result = gmapper.directions(origin,destination,mode=modal)
+    print("queried directions")
     directions_legs = (directions_result[0]['legs'])
     dirleg = directions_legs[0]
     distlist = dirleg['distance']
